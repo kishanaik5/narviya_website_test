@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #fdfcf9; /* Studio Ilse warm linen off-white */
+  --foreground: #1c1a17; /* Soft dark charcoal */
+  --accent: #9a7d46;     /* Brushed gold / matte brass */
+  --accent-rgb: 154, 125, 70;
+  
+  --plaster-light: #f5f2eb;
+  --plaster-border: #e9e4d9;
+  --luxury-card: rgba(253, 252, 249, 0.85);
+  --luxury-border: rgba(154, 125, 70, 0.18);
+}
+
+.dark {
+  --background: #12110f; /* Obsidian earth shadow */
+  --foreground: #f4f2ee; /* Soft warm plaster */
+  --accent: #c4ab7c;     /* Muted champagne gold */
+  --accent-rgb: 196, 171, 124;
+  
+  --plaster-light: #1c1b18;
+  --plaster-border: #2a2824;
+  --luxury-card: rgba(18, 17, 15, 0.9);
+  --luxury-border: rgba(196, 171, 124, 0.22);
+}
+
+@theme {
+  --color-primary: var(--accent);
+  --color-bg-dark: #12110f;
+  --color-bg-light: #fdfcf9;
+  --color-luxury-card: var(--luxury-card);
+  --color-luxury-border: var(--luxury-border);
+  --color-plaster: var(--plaster-light);
+  --color-plaster-border: var(--plaster-border);
+  
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Base styles for a clean, human-centric visual layout */
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-x: hidden;
+}
+
+/* Elegant editorial titles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+/* Design styles */
+.editorial-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #8a6c37 0%, #d4b47c 50%, #8a6c37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gold-gradient-text {
+  background: linear-gradient(135deg, #c4ab7c 0%, #faecd1 50%, #c4ab7c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.editorial-card {
+  background: var(--luxury-card);
+  border: 1px solid var(--plaster-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.015);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(154, 125, 70, 0.06);
+}
+
+.dark .editorial-card:hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Plaster block texture */
+.plaster-bg {
+  background-color: var(--plaster-light);
+  border: 1px solid var(--plaster-border);
+}
+
+.glass-panel {
+  background: var(--luxury-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--luxury-border);
+}
+
+/* Custom Scrollbar - Minimalist */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--plaster-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideRight {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-editorial-fade {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.line-reveal {
+  position: relative;
+}
+
+.line-reveal::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.line-reveal:hover::after {
+  transform: scaleX(1);
+}
+
+/* Image zoom styling */
+.zoom-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.zoom-image {
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zoom-container:hover .zoom-image {
+  transform: scale(1.04);
+}
