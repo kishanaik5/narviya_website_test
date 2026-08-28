@@ -4,7 +4,7 @@ export async function downloadCardPdf(): Promise<boolean> {
   try {
     const { jsPDF } = await import("jspdf");
 
-    // Standard business card size in mm: 88.9mm x 50.8mm (3.5" x 2")
+    // Standard business card dimensions in mm: 88.9mm x 50.8mm (3.5" x 2")
     const pdf = new jsPDF({
       orientation: "landscape",
       unit: "mm",
@@ -16,9 +16,8 @@ export async function downloadCardPdf(): Promise<boolean> {
     const h = 50.8;
 
     // ==========================================
-    // PAGE 1: FRONT (Deep Obsidian Luxury Gold)
+    // PAGE 1: FRONT (Deep Obsidian & Brushed Gold)
     // ==========================================
-    // Background
     pdf.setFillColor(20, 19, 17); // #141311
     pdf.rect(0, 0, w, h, "F");
 
@@ -27,7 +26,7 @@ export async function downloadCardPdf(): Promise<boolean> {
     pdf.setLineWidth(0.4);
     pdf.roundedRect(2.5, 2.5, w - 5, h - 5, 2, 2, "D");
 
-    // Decorative subtle watermark circles
+    // Circular accents
     pdf.setDrawColor(196, 171, 124);
     pdf.setLineWidth(0.15);
     pdf.circle(w - 2, 2, 12, "D");
@@ -39,30 +38,24 @@ export async function downloadCardPdf(): Promise<boolean> {
     pdf.setTextColor(253, 252, 249);
     pdf.text(siteConfig.brandShort || "NARVIA", 8, 14);
 
-    // Studio Tag Badge
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(6);
-    pdf.setTextColor(196, 171, 124);
-    pdf.text("STUDIO", 40, 10.5);
-
     // Subtitle
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(6.5);
-    pdf.setTextColor(180, 175, 165);
+    pdf.setTextColor(196, 171, 124);
     pdf.text("INTERIOR  •  EXTERIOR  •  MATERIALS", 8, 19);
 
-    // Gold Accent Divider
+    // Accent line
     pdf.setDrawColor(196, 171, 124);
     pdf.setLineWidth(0.3);
-    pdf.line(8, 23, 26, 23);
+    pdf.line(8, 23, 28, 23);
 
-    // Tagline / Mission
+    // Tagline: Where Vision Meets Space, Built Beautifully
     pdf.setFont("times", "italic");
     pdf.setFontSize(9);
     pdf.setTextColor(220, 215, 205);
     pdf.text(`"${siteConfig.tagline}"`, 8, 32);
 
-    // Footer Info on Front
+    // Footer on Front
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(6.5);
     pdf.setTextColor(196, 171, 124);
@@ -70,8 +63,8 @@ export async function downloadCardPdf(): Promise<boolean> {
 
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(6.5);
-    pdf.setTextColor(160, 155, 145);
-    pdf.text(siteConfig.city, w - 8, 44, { align: "right" });
+    pdf.setTextColor(196, 171, 124);
+    pdf.text("ARCHITECTURAL LIVING", w - 8, 44, { align: "right" });
 
     // ==========================================
     // PAGE 2: BACK (Warm Linen / Ivory Contact Card)
@@ -87,46 +80,63 @@ export async function downloadCardPdf(): Promise<boolean> {
     pdf.setLineWidth(0.4);
     pdf.roundedRect(2.5, 2.5, w - 5, h - 5, 2, 2, "D");
 
-    // Header on Back: Brand & Visiting Card Label
+    // Header on Back: Brand
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(11);
+    pdf.setFontSize(13);
     pdf.setTextColor(28, 26, 23);
-    pdf.text(siteConfig.brandShort || "NARVIA", 8, 10);
+    pdf.text(siteConfig.brandShort || "NARVIA", 8, 11);
 
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(5.5);
-    pdf.setTextColor(154, 125, 70); // #9a7d46
-    pdf.text("VISITING CARD", w - 8, 9.5, { align: "right" });
-
-    // Divider
+    // Header divider
     pdf.setDrawColor(233, 228, 217);
-    pdf.setLineWidth(0.2);
-    pdf.line(8, 12.5, w - 8, 12.5);
+    pdf.setLineWidth(0.25);
+    pdf.line(8, 14, w - 8, 14);
 
-    // Contact Details Rows
-    const rows = [
-      { label: "WEB", value: siteConfig.domain },
-      { label: "EMAIL", value: siteConfig.email },
-      { label: "PHONE", value: siteConfig.phone !== "Add phone number" ? siteConfig.phone : "+91 98765 43210" },
-      { label: "STUDIO", value: siteConfig.address !== "Add studio address" ? siteConfig.address : `${siteConfig.city} — Karnataka` },
-    ];
+    // 1. Phone + WhatsApp Combined Row
+    let startY = 21;
 
-    let startY = 18;
-    rows.forEach((row) => {
-      // Label
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(6.5);
-      pdf.setTextColor(154, 125, 70);
-      pdf.text(row.label, 8, startY);
+    // Phone Circle
+    pdf.setFillColor(245, 240, 230);
+    pdf.setDrawColor(154, 125, 70);
+    pdf.setLineWidth(0.25);
+    pdf.circle(9.5, startY - 1, 1.8, "FD");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(4.5);
+    pdf.setTextColor(154, 125, 70);
+    pdf.text("P", 9.5, startY - 0.3, { align: "center" });
 
-      // Value
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(7.5);
-      pdf.setTextColor(40, 38, 35);
-      pdf.text(row.value, 24, startY);
+    // WhatsApp Circle
+    pdf.circle(13.5, startY - 1, 1.8, "FD");
+    pdf.text("W", 13.5, startY - 0.3, { align: "center" });
 
-      startY += 6.5;
-    });
+    // Value
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(30, 28, 25);
+    pdf.text(siteConfig.phone, 18, startY);
+
+    // 2. Email Row
+    startY += 7.5;
+    pdf.circle(11.5, startY - 1, 2, "FD");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(5);
+    pdf.text("@", 11.5, startY - 0.3, { align: "center" });
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(30, 28, 25);
+    pdf.text(siteConfig.email, 18, startY);
+
+    // 3. Web Row
+    startY += 7.5;
+    pdf.circle(11.5, startY - 1, 2, "FD");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(6);
+    pdf.text("•", 11.5, startY - 0.3, { align: "center" });
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(30, 28, 25);
+    pdf.text(siteConfig.domain, 18, startY);
 
     // Footer on Back
     pdf.setDrawColor(233, 228, 217);
@@ -136,14 +146,14 @@ export async function downloadCardPdf(): Promise<boolean> {
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(5.5);
     pdf.setTextColor(120, 115, 105);
-    pdf.text("WOOD & GLASS ARCHITECTURAL STUDIO", 8, 46.5);
+    pdf.text("LUXURY ARCHITECTURAL LIVING", 8, 46.5);
 
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(5.5);
     pdf.setTextColor(154, 125, 70);
-    pdf.text("OFFICIAL CREDENTIAL", w - 8, 46.5, { align: "right" });
+    pdf.text("VERIFIED", w - 8, 46.5, { align: "right" });
 
-    // Download PDF file as "narvia-card.pdf"
+    // Save as narvia-card.pdf
     pdf.save("narvia-card.pdf");
     return true;
   } catch (err) {

@@ -14,7 +14,7 @@ export const translations = {
       contact: "Contact",
     },
     hero: {
-      tagline: "Designed for Living",
+      tagline: "Where Vision Meets Space, Built Beautifully",
       title1: "A Frame",
       title2: "for Human Life",
       subtitle: "Bespoke home personalization, organic corporate workspaces, and architectural outdoor netting systems. Crafted with visceral materiality and absolute integrity.",
@@ -188,7 +188,7 @@ export const translations = {
       contact: "ಸಂಪರ್ಕಿಸಿ",
     },
     hero: {
-      tagline: "ಬಾಳಿಕೆಗೆ ತಕ್ಕ ವಿನ್ಯಾಸ",
+      tagline: "ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಾಗದ ಸುಂದರ ನಿರ್ಮಾಣ",
       title1: "ಮಾನವ ಜೀವನಕ್ಕೆ",
       title2: "ಅತ್ಯುತ್ತಮ ಆಸರೆ",
       subtitle: "ನಿಮ್ಮ ಮನೆಯ ವೈಯಕ್ತಿಕ ವಿನ್ಯಾಸ, ಕಚೇರಿಗಳ ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಹೊರಾಂಗಣ ಸುರಕ್ಷತಾ ಜಾಲಗಳ ವ್ಯವಸ್ಥೆ. ಸೌಂದರ್ಯ ಮತ್ತು ನಂಬಿಕಸ್ಥ ಗುಣಮಟ್ಟದೊಂದಿಗೆ.",

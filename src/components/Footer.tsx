@@ -155,20 +155,14 @@ export default function Footer({ lang }: FooterProps) {
                 {lang === "en" ? "Visiting Card" : "ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್"}
               </span>
               <span className="text-[9px] text-neutral-500 font-sans">
-                {isFlipped
-                  ? lang === "en"
-                    ? "Back &middot; Contact Info"
-                    : "ಹಿಂಭಾಗ &middot; ಸಂಪರ್ಕ"
-                  : lang === "en"
-                  ? "Front &middot; Identity"
-                  : "ಮುಂಭಾಗ &middot; ಬ್ರ್ಯಾಂಡ್"}
+                {lang === "en" ? "Tap to flip" : "ತಿರುಗಿಸಲು ಸ್ಪರ್ಶಿಸಿ"}
               </span>
             </div>
 
-            {/* Luxury Visiting Card Container */}
+            {/* Credit Card Container: Vertical portrait on mobile (90deg card proportion) / Landscape on desktop */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="perspective-1000 w-full max-w-[340px] aspect-[1.75/1] mx-auto lg:mx-0 cursor-pointer touch-manipulation relative group"
+              className="perspective-1000 w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[340px] aspect-[1/1.42] sm:aspect-[1.75/1] mx-auto lg:mx-0 cursor-pointer touch-manipulation relative group"
               title={lang === "en" ? "Click/tap to flip card" : "ಕಾರ್ಡ್ ತಿರುಗಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"}
             >
               {/* Rotating 3D card body */}
@@ -181,25 +175,11 @@ export default function Footer({ lang }: FooterProps) {
                 {/* FRONT SIDE with top right download icon */}
                 <div className="absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all duration-300">
                   <CardFront onDownload={handleDownloadPdf} isDownloading={isDownloading} />
-                  {/* Tap to Flip helper pill */}
-                  <div className="absolute bottom-2.5 right-3.5 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#141311] border border-neutral-700 text-[8px] text-neutral-300 group-hover:border-[#c4ab7c] transition-colors">
-                    <svg className="w-2.5 h-2.5 text-[#c4ab7c]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>{lang === "en" ? "Tap to flip" : "ತಿರುಗಿಸಿ"}</span>
-                  </div>
                 </div>
 
                 {/* BACK SIDE with top right download icon */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all duration-300">
                   <CardBack onDownload={handleDownloadPdf} isDownloading={isDownloading} />
-                  {/* Tap to Flip helper pill */}
-                  <div className="absolute bottom-2.5 right-3.5 z-20 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fdfcf9] border border-[#e9e4d9] text-[8px] text-neutral-700 group-hover:border-[#9a7d46] transition-colors">
-                    <svg className="w-2.5 h-2.5 text-[#9a7d46]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>{lang === "en" ? "Tap to flip" : "ತಿರುಗಿಸಿ"}</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -211,16 +191,26 @@ export default function Footer({ lang }: FooterProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-[1px] bg-neutral-900 my-8"></div>
 
       {/* Bottom strip */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 font-sans">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-neutral-500 font-sans">
         <p>
-          &copy; {new Date().getFullYear()} {t.nav.brand}.{" "}
-          {lang === "en"
-            ? "All rights reserved. Designed for elite lifestyles."
-            : "ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."}
+          &copy; {new Date().getFullYear()} {siteConfig.brandShort || "NARVIA"} DESIGN. All rights reserved.
+        </p>
+
+        {/* Designed & Built by Credit */}
+        <p className="flex items-center gap-1.5 text-neutral-400">
+          <span>Designed &amp; Built by</span>
+          <a
+            href="https://kishan-k.pages.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#c4ab7c] hover:text-[#fdfcf9] font-medium underline underline-offset-4 decoration-[#c4ab7c]/40 hover:decoration-[#c4ab7c] transition-colors"
+          >
+            KISHAN K
+          </a>
         </p>
 
         {/* Social Icons */}
-        <div className="flex space-x-6 mt-4 md:mt-0">
+        <div className="flex space-x-6">
           {Object.entries(siteConfig.social).map(([social, value]) => {
             const isPlaceholder = value.startsWith("Add ");
             return (

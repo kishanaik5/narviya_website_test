@@ -243,7 +243,7 @@ export default function ContactForm({ lang }: ContactFormProps) {
 
             {/* Contact details cards */}
             <div className="space-y-8">
-              {/* Address */}
+              {/* Location / Presence */}
               <div className="flex items-start space-x-4">
                 <div className="p-3 border border-plaster-border bg-white text-primary flex-shrink-0">
                   <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -253,10 +253,10 @@ export default function ContactForm({ lang }: ContactFormProps) {
                 </div>
                 <div>
                   <h4 className="font-serif text-lg font-medium text-neutral-900 mb-1">
-                    {t.addressTitle}
+                    {lang === "en" ? "Service Region" : "ಸೇವಾ ಪ್ರದೇಶ"}
                   </h4>
                   <p className="font-sans text-xs text-neutral-500 font-light leading-relaxed">
-                    {siteConfig.address}
+                    {siteConfig.city}
                   </p>
                 </div>
               </div>
