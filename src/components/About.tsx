@@ -34,7 +34,7 @@ export default function About({ lang }: AboutProps) {
           </div>
 
           {/* About narrative */}
-          <div className="lg:col-span-7 order-1 lg:order-2 flex flex-col space-y-6 text-left">
+          <div className="lg:col-span-7 order-1 lg:order-2 flex flex-col space-y-6 text-center lg:text-left items-center lg:items-start">
             <div className="inline-flex items-center space-x-2">
               <span className="h-[1px] w-8 bg-primary"></span>
               <span className="text-xs uppercase tracking-[0.3em] font-sans font-semibold text-primary">
@@ -46,18 +46,18 @@ export default function About({ lang }: AboutProps) {
               {t.title}
             </h2>
 
-            <div className="w-16 h-[2px] bg-primary mb-2"></div>
+            <div className="w-16 h-[2px] bg-primary mb-2 mx-auto lg:mx-0"></div>
 
-            <p className="font-sans text-neutral-600 font-light leading-relaxed">
+            <p className="font-sans text-neutral-600 font-light leading-relaxed max-w-xl">
               {t.desc1}
             </p>
 
-            <p className="font-sans text-neutral-600 font-light leading-relaxed">
+            <p className="font-sans text-neutral-600 font-light leading-relaxed max-w-xl">
               {t.desc2}
             </p>
 
             {/* Mission Highlight Card */}
-            <div className="p-6 border-l-2 border-primary bg-neutral-50 glass-panel">
+            <div className="p-6 border-l-2 border-primary bg-neutral-50 glass-panel text-left w-full">
               <span className="block font-serif italic text-lg text-neutral-800">
                 &ldquo;{t.mission}&rdquo;
               </span>
