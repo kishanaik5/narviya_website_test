@@ -1,9 +1,11 @@
+import { siteConfig } from "@/config/site";
+
 export type TranslationKeys = typeof translations.en;
 
 export const translations = {
   en: {
     nav: {
-      brand: "NARVIYA DESIGNERS",
+      brand: siteConfig.brandName.toUpperCase(),
       home: "Home",
       services: "Services",
       materials: "Materials",
@@ -18,9 +20,9 @@ export const translations = {
       subtitle: "Bespoke home personalization, organic corporate workspaces, and architectural outdoor netting systems. Crafted with visceral materiality and absolute integrity.",
       ctaPrimary: "View Projects",
       ctaSecondary: "Request Consultation",
-      experience: "Years of Trust",
-      completed: "Luxury Spaces Built",
-      satisfied: "Satisfied Clients",
+      experience: "Fixed-Scope Quotes",
+      completed: "In-House Fabrication",
+      satisfied: "One Project Lead",
     },
     services: {
       title: "Our Collections",
@@ -129,7 +131,7 @@ export const translations = {
     },
     about: {
       title: "About Narviya Designers",
-      desc1: "Narviya Designers is an architectural design house built on human-centric principles. We believe design should be a silent frame for daily life—enhancing how you live, work, and interact. Over the past 10 years, we have delivered 350+ projects across Bengaluru.",
+      desc1: "Narvia Design is an architectural design house built on human-centric principles. We believe design should be a silent frame for daily life — enhancing how you live, work, and interact, built in wood and glass on your budget and your timeline.",
       desc2: "Our core expertise lies in merging high-end wood finishing, acoustic glass partition structures, custom residential layouts, and high-strength outdoor safety solutions into seamless, living spaces.",
       mission: "Crafting atmospheric, balanced environments that respect materials, durability, and human well-being.",
     },
@@ -156,11 +158,28 @@ export const translations = {
       success: "Callback registered! We will call you shortly.",
       rateLimit: "You have already requested a callback. Please wait a few minutes.",
       spamBlock: "Spam block triggered. Please try again.",
+    },
+    card: {
+      tagline: "Official Credentials",
+      title: "Digital Visiting Card",
+      subtitle: "Save or download our official studio visiting card. View direct contacts, studio location, and consultation channels.",
+      flipPrompt: "Tap card to flip front & back",
+      frontLabel: "Front Side",
+      backLabel: "Back Side",
+      flipButton: "Flip Card",
+      downloadPdf: "Download PDF Card",
+      downloading: "Preparing PDF...",
+      printCard: "Print / Save PDF",
+      copied: "Copied to clipboard!",
+      copyPhone: "Copy Phone",
+      copyEmail: "Copy Email",
+      openMap: "Studio Location",
+      dimensions: "Standard 3.5\" × 2\" (Print-Ready)",
     }
   },
   kn: {
     nav: {
-      brand: "ನಾರ್ವಿಯಾ ಡಿಸೈನರ್ಸ್",
+      brand: siteConfig.brandName.toUpperCase(), // TODO: swap for a confirmed Kannada transliteration if the client wants one
       home: "ಮುಖಪುಟ",
       services: "ಸೇವೆಗಳು",
       materials: "ವಸ್ತುಗಳು",
@@ -175,9 +194,9 @@ export const translations = {
       subtitle: "ನಿಮ್ಮ ಮನೆಯ ವೈಯಕ್ತಿಕ ವಿನ್ಯಾಸ, ಕಚೇರಿಗಳ ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಹೊರಾಂಗಣ ಸುರಕ್ಷತಾ ಜಾಲಗಳ ವ್ಯವಸ್ಥೆ. ಸೌಂದರ್ಯ ಮತ್ತು ನಂಬಿಕಸ್ಥ ಗುಣಮಟ್ಟದೊಂದಿಗೆ.",
       ctaPrimary: "ಯೋಜನೆಗಳನ್ನು ನೋಡಿ",
       ctaSecondary: "ಸಮಾಲೋಚನೆ ವಿನಂತಿ",
-      experience: "ವರ್ಷಗಳ ನಂಬಿಕೆ",
-      completed: "ಐಷಾರಾಮಿ ತಾಣಗಳು",
-      satisfied: "ಸಂತೃಪ್ತ ಗ್ರಾಹಕರು",
+      experience: "ಸ್ಥಿರ-ಬೆಲೆ ಉಲ್ಲೇಖಗಳು",
+      completed: "ಸ್ವಂತ ನಿರ್ಮಾಣ",
+      satisfied: "ಒಬ್ಬ ಯೋಜನಾ ಮುಖಂಡ",
     },
     services: {
       title: "ನಮ್ಮ ಶ್ರೇಣಿಗಳು",
@@ -286,7 +305,7 @@ export const translations = {
     },
     about: {
       title: "ನಾರ್ವಿಯಾ ಡಿಸೈನರ್ಸ್ ಬಗ್ಗೆ",
-      desc1: "ನಾರ್ವಿಯಾ ಡಿಸೈನರ್ಸ್ ಮಾನವೀಯ ಮೌಲ್ಯಗಳು ಹಾಗೂ ವಾಸ್ತುಶಿಲ್ಪ ತತ್ವಗಳ ಮೇಲೆ ನಿರ್ಮಿತವಾದ ಸಂಸ್ಥೆಯಾಗಿದೆ. ವಿನ್ಯಾಸವು ಮಾನವ ಜೀವನಕ್ಕೆ ಪೂರಕವಾಗಿರಬೇಕೆಂದು ನಾವು ನಂಬುತ್ತೇವೆ. ಬೆಂಗಳೂರಿನಾದ್ಯಂತ ಕಳೆದ 10 ವರ್ಷಗಳಲ್ಲಿ ನಾವು 350ಕ್ಕೂ ಹೆಚ್ಚು ಯೋಜನೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಮುಗಿಸಿದ್ದೇವೆ.",
+      desc1: "ನಾರ್ವಿಯಾ ಡಿಸೈನ್ ಮಾನವೀಯ ಮೌಲ್ಯಗಳು ಹಾಗೂ ವಾಸ್ತುಶಿಲ್ಪ ತತ್ವಗಳ ಮೇಲೆ ನಿರ್ಮಿತವಾದ ಸಂಸ್ಥೆಯಾಗಿದೆ. ವಿನ್ಯಾಸವು ಮಾನವ ಜೀವನಕ್ಕೆ ಪೂರಕವಾಗಿರಬೇಕೆಂದು ನಾವು ನಂಬುತ್ತೇವೆ — ಮರ ಮತ್ತು ಗಾಜಿನಲ್ಲಿ, ನಿಮ್ಮ ಬಜೆಟ್ ಮತ್ತು ಸಮಯಕ್ಕೆ ಅನುಗುಣವಾಗಿ ನಿರ್ಮಿಸಲಾಗಿದೆ.",
       desc2: "ನಮ್ಮ ವಿಶಿಷ್ಟ ಪರಿಣತಿಯು ಅತ್ಯುತ್ತಮ ಮರಗೆಲಸ, ಅಕೌಸ್ಟಿಕ್ ಗ್ಲಾಸ್ ಪಾರ್ಟಿಷನ್, ಕಸ್ಟಮ್ ಗೃಹ ವಿನ್ಯಾಸ ಹಾಗೂ ಗರಿಷ್ಠ ಭದ್ರತೆಯುಳ್ಳ ಬಾಲ್ಕನಿ ನೆಟ್‌ಗಳನ್ನು ಕಲಾತ್ಮಕವಾಗಿ ಜೋಡಿಸುವಲ್ಲಿದೆ.",
       mission: "ವಸ್ತುಗಳ ಮೂಲ ಗುಣಮಟ್ಟ, ಬಾಳಿಕೆ ಮತ್ತು ಜನರ ನೆಮ್ಮದಿಗೆ ಪೂರಕವಾದ ಸುಂದರ ತಾಣಗಳ ಸೃಷ್ಟಿ.",
     },
@@ -313,6 +332,23 @@ export const translations = {
       success: "ಕಾಲ್‌ಬ್ಯಾಕ್ ನೋಂದಣಿಯಾಗಿದೆ! ನಾವು ಶೀಘ್ರದಲ್ಲೇ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
       rateLimit: "ನೀವು ಈಗಾಗಲೇ ವಿನಂತಿಸಿದ್ದೀರಿ. ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯ ಕಾಯಿರಿ.",
       spamBlock: "ಸ್ಪ್ಯಾಮ್ ಬ್ಲಾಕ್ ಆಗಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಪ್ರಯತ್ನಿಸಿ.",
+    },
+    card: {
+      tagline: "ಅಧಿಕೃತ ಗುರುತು",
+      title: "ಡಿಜಿಟಲ್ ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್",
+      subtitle: "ನಮ್ಮ ಅಧಿಕೃತ ಸ್ಟುಡಿಯೋ ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್ ಅನ್ನು ಉಳಿಸಿಕೊಳ್ಳಿ ಅಥವಾ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ. ನಮ್ಮ ನೇರ ಸಂಪರ್ಕಗಳು ಮತ್ತು ವಿಳಾಸದ ಮಾಹಿತಿ ಇಲ್ಲಿದೆ.",
+      flipPrompt: "ಮುಂಭಾಗ ಮತ್ತು ಹಿಂಭಾಗವನ್ನು ನೋಡಲು ಕಾರ್ಡ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ",
+      frontLabel: "ಮುಂಭಾಗ",
+      backLabel: "ಹಿಂಭಾಗ",
+      flipButton: "ಕಾರ್ಡ್ ತಿರುಗಿಸಿ",
+      downloadPdf: "PDF ಕಾರ್ಡ್ ಡೌನ್‌ಲೋಡ್",
+      downloading: "PDF ಸಿದ್ಧವಾಗುತ್ತಿದೆ...",
+      printCard: "ಪ್ರಿಂಟ್ / PDF ಉಳಿಸಿ",
+      copied: "ನಕಲಿಸಲಾಗಿದೆ!",
+      copyPhone: "ಫೋನ್ ನಕಲಿಸಿ",
+      copyEmail: "ಇಮೇಲ್ ನಕಲಿಸಿ",
+      openMap: "ಸ್ಟುಡಿಯೋ ವಿಳಾಸ",
+      dimensions: "ಪ್ರಮಾಣಿತ 3.5\" × 2\" (ಮುದ್ರಣಕ್ಕೆ ಸಿದ್ಧ)",
     }
   }
 };

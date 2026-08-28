@@ -2,32 +2,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfcf9; /* Studio Ilse warm linen off-white */
-  --foreground: #1c1a17; /* Soft dark charcoal */
-  --accent: #9a7d46;     /* Brushed gold / matte brass */
+  --background: #fdfcf9; /* Warm linen / ivory */
+  --foreground: #1c1a17; /* Deep charcoal ink */
+  --accent: #9a7d46;     /* Brass / gold */
   --accent-rgb: 154, 125, 70;
-  
+  --accent-light: #c4ab7c;
+  --walnut: #5b3a29;     /* Wood tone accent */
   --plaster-light: #f5f2eb;
   --plaster-border: #e9e4d9;
+  --muted-text: #6b6459;
   --luxury-card: rgba(253, 252, 249, 0.85);
   --luxury-border: rgba(154, 125, 70, 0.18);
 }
 
-.dark {
-  --background: #12110f; /* Obsidian earth shadow */
-  --foreground: #f4f2ee; /* Soft warm plaster */
-  --accent: #c4ab7c;     /* Muted champagne gold */
-  --accent-rgb: 196, 171, 124;
-  
-  --plaster-light: #1c1b18;
-  --plaster-border: #2a2824;
-  --luxury-card: rgba(18, 17, 15, 0.9);
-  --luxury-border: rgba(196, 171, 124, 0.22);
-}
-
 @theme {
   --color-primary: var(--accent);
-  --color-bg-dark: #12110f;
+  --color-accent-light: #c4ab7c;
+  --color-walnut: #5b3a29;
+  --color-muted-text: #6b6459;
+  --color-bg-dark: #1c1a17;
   --color-bg-light: #fdfcf9;
   --color-luxury-card: var(--luxury-card);
   --color-luxury-border: var(--luxury-border);
@@ -38,11 +31,13 @@
   --font-sans: 'Inter', sans-serif;
 }
 
-/* Base styles for a clean, human-centric visual layout */
+/* Base styles for clean, human-centric visual layout */
 html {
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 body {
@@ -51,7 +46,6 @@ body {
   font-family: 'Inter', sans-serif;
   letter-spacing: -0.01em;
   line-height: 1.6;
-  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-x: hidden;
 }
 
@@ -79,28 +73,21 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-.dark .gold-gradient-text {
-  background: linear-gradient(135deg, #c4ab7c 0%, #faecd1 50%, #c4ab7c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #8a6c37 0%, #d4b47c 100%);
 }
 
 .editorial-card {
   background: var(--luxury-card);
   border: 1px solid var(--plaster-border);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.015);
+  box-shadow: 0 4px 30px rgba(28, 26, 23, 0.04);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-card:hover {
   border-color: var(--accent);
   transform: translateY(-4px);
-  box-shadow: 0 10px 40px rgba(154, 125, 70, 0.06);
-}
-
-.dark .editorial-card:hover {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 40px rgba(154, 125, 70, 0.12);
 }
 
 /* Plaster block texture */
@@ -200,4 +187,71 @@ h1, h2, h3, h4, h5, h6 {
 
 .zoom-container:hover .zoom-image {
   transform: scale(1.04);
+}
+
+/* 3D Card Flip Styles - Optimized for Razor Sharp Text (No Blur) */
+.perspective-1000 {
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 1px);
+  -webkit-transform: translate3d(0, 0, 1px);
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg) translate3d(0, 0, 1px);
+  -webkit-transform: rotateY(180deg) translate3d(0, 0, 1px);
+}
+
+@keyframes cardShimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(200%) rotate(25deg); }
+}
+
+.animate-card-shimmer {
+  animation: cardShimmer 6s infinite ease-in-out;
+}
+
+/* Corner Puppet Icon Animations */
+@keyframes puppetWave {
+  0%, 100% { transform: rotate(0deg); }
+  15%, 45% { transform: rotate(-12deg); }
+  30%, 60% { transform: rotate(12deg); }
+  75% { transform: rotate(0deg); }
+}
+
+@keyframes puppetFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes puppetBlink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+.animate-puppet-wave {
+  animation: puppetWave 3s infinite ease-in-out;
+  transform-origin: 80% 80%;
+}
+
+.animate-puppet-float {
+  animation: puppetFloat 4s infinite ease-in-out;
+}
+
+.animate-puppet-blink {
+  animation: puppetBlink 4s infinite ease-in-out;
+  transform-origin: center;
 }

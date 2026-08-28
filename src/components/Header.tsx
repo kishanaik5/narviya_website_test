@@ -11,7 +11,6 @@ interface HeaderProps {
 export default function Header({ lang, setLang }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const t = translations[lang].nav;
 
@@ -21,25 +20,8 @@ export default function Header({ lang, setLang }: HeaderProps) {
     };
     window.addEventListener("scroll", handleScroll);
 
-    // Sync dark mode state with system or state
-    const isDark = document.documentElement.classList.contains("dark");
-    setIsDarkMode(isDark);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const toggleDarkMode = () => {
-    const root = document.documentElement;
-    if (root.classList.contains("dark")) {
-      root.classList.remove("dark");
-      setIsDarkMode(false);
-      localStorage.setItem("theme", "light");
-    } else {
-      root.classList.add("dark");
-      setIsDarkMode(true);
-      localStorage.setItem("theme", "dark");
-    }
-  };
 
   const navItems = [
     { name: t.home, href: "#home" },
@@ -53,17 +35,17 @@ export default function Header({ lang, setLang }: HeaderProps) {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "py-4 glass-panel border-b border-luxury-border"
-          : "py-6 bg-transparent"
+          ? "py-3.5 bg-[#fdfcf9]/90 backdrop-blur-md border-b border-[#e9e4d9] shadow-[0_4px_25px_rgba(28,26,23,0.06)]"
+          : "py-5 bg-[#fdfcf9]/60 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
         {/* Brand Logo */}
         <a href="#home" className="flex flex-col group">
-          <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider gold-gradient-text transition-transform duration-300 group-hover:scale-102">
+          <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider text-[#1c1a17] group-hover:text-[#9a7d46] transition-colors duration-300">
             {t.brand}
           </span>
-          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-neutral-400 group-hover:text-primary transition-colors duration-300">
+          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-[#6b6459] font-sans font-medium">
             {lang === "en" ? "Interior & Exterior Luxury" : "ಐಷಾರಾಮಿ ವಿನ್ಯಾಸಗಾರರು"}
           </span>
         </a>
@@ -74,57 +56,42 @@ export default function Header({ lang, setLang }: HeaderProps) {
             <a
               key={item.name}
               href={item.href}
-              className="text-sm font-medium tracking-wide text-neutral-600 dark:text-neutral-300 hover:text-primary dark:hover:text-primary transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1px] after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+              className="text-sm font-medium tracking-wide text-[#1c1a17] hover:text-[#9a7d46] transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-[#9a7d46] after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.name}
             </a>
           ))}
         </nav>
 
-        {/* Controls (Language, Theme, CTA) */}
-        <div className="hidden md:flex items-center space-x-6">
-          {/* Language Switcher */}
+        {/* Controls (High-Visibility Language Switcher & Consultation CTA) */}
+        <div className="hidden md:flex items-center space-x-4">
+          {/* High-Visibility Language Switcher Button */}
           <button
             onClick={() => setLang(lang === "en" ? "kn" : "en")}
-            className="text-xs font-semibold px-3 py-1.5 rounded-full border border-luxury-border text-neutral-700 dark:text-neutral-200 hover:bg-primary hover:text-white dark:hover:text-neutral-900 transition-all duration-300 cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border border-[#9a7d46]/40 bg-white text-[#1c1a17] hover:bg-[#9a7d46] hover:text-white transition-all duration-300 cursor-pointer shadow-sm active:scale-95"
+            title="Switch Language"
           >
-            {lang === "en" ? "ಕನ್ನಡ" : "English"}
+            <svg className="w-3.5 h-3.5 text-[#9a7d46] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+            <span>{lang === "en" ? "ಕನ್ನಡ (KN)" : "English (EN)"}</span>
           </button>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-full border border-luxury-border text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-300 cursor-pointer"
-            aria-label="Toggle Dark Mode"
-          >
-            {isDarkMode ? (
-              // Sun icon
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41z" />
-              </svg>
-            ) : (
-              // Moon icon
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10 0-4.8 3.5-8.9 8.3-9.7.7-.1 1.3.4 1.4 1.1.1.7-.4 1.3-1.1 1.4-3.3.5-5.6 3.4-5.6 6.8 0 4.1 3.4 7.5 7.5 7.5 3.8 0 7.1-2.9 7.5-6.7.1-.7.7-1.2 1.4-1.1.7.1 1.2.7 1.1 1.4-.7 5-5 8.7-10.4 9.3z" />
-              </svg>
-            )}
-          </button>
-
-          {/* CTA */}
+          {/* CTA Button */}
           <a
             href="#contact"
-            className="text-xs font-semibold uppercase tracking-wider px-5 py-2.5 gold-gradient-bg text-neutral-900 dark:text-neutral-900 font-sans rounded-none hover:shadow-lg hover:brightness-105 active:scale-98 transition-all duration-300"
+            className="text-xs font-semibold uppercase tracking-wider px-5 py-2.5 bg-gradient-to-r from-[#8a6c37] to-[#d4b47c] text-white font-sans rounded-full hover:shadow-[0_4px_18px_rgba(154,125,70,0.35)] hover:brightness-105 active:scale-98 transition-all duration-300"
           >
             {t.contact}
           </a>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center space-x-4">
-          {/* Mobile Lang Button */}
+        {/* Mobile Controls */}
+        <div className="md:hidden flex items-center space-x-2.5">
+          {/* Mobile High-Visibility Lang Button */}
           <button
             onClick={() => setLang(lang === "en" ? "kn" : "en")}
-            className="text-xs font-semibold px-2 py-1 rounded border border-luxury-border text-neutral-700 dark:text-neutral-200"
+            className="text-xs font-bold px-3 py-1.5 rounded-full border border-[#9a7d46]/40 bg-white text-[#1c1a17] shadow-sm active:scale-95"
           >
             {lang === "en" ? "KN" : "EN"}
           </button>
@@ -132,7 +99,7 @@ export default function Header({ lang, setLang }: HeaderProps) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-neutral-700 dark:text-neutral-200"
+            className="p-2 text-[#1c1a17] hover:text-[#9a7d46] transition-colors"
             aria-label="Toggle Menu"
           >
             {isMobileMenuOpen ? (
@@ -150,34 +117,24 @@ export default function Header({ lang, setLang }: HeaderProps) {
 
       {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
-        <div className="md:hidden animate-fade-in absolute top-full left-0 right-0 glass-panel border-b border-luxury-border py-6 px-8 flex flex-col space-y-4">
+        <div className="md:hidden animate-fade-in absolute top-full left-0 right-0 bg-[#fdfcf9] border-b border-[#e9e4d9] py-6 px-8 flex flex-col space-y-4 shadow-xl text-[#1c1a17]">
           {navItems.map((item) => (
             <a
               key={item.name}
               href={item.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-base font-medium text-neutral-800 dark:text-neutral-200 hover:text-primary transition-colors py-1"
+              className="text-base font-medium text-[#1c1a17] hover:text-[#9a7d46] transition-colors py-1.5"
             >
               {item.name}
             </a>
           ))}
           
-          <div className="h-[1px] bg-luxury-border my-2"></div>
-          
-          <div className="flex justify-between items-center pt-2">
-            <span className="text-sm text-neutral-500">{lang === "en" ? "Dark Mode" : "ಡಾರ್ಕ್ ಮೋಡ್"}</span>
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full border border-luxury-border text-neutral-700 dark:text-neutral-200"
-            >
-              {isDarkMode ? "Light" : "Dark"}
-            </button>
-          </div>
+          <div className="h-[1px] bg-[#e9e4d9] my-2"></div>
           
           <a
             href="#contact"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="w-full text-center py-3 gold-gradient-bg text-neutral-900 font-semibold uppercase tracking-wider text-sm mt-2"
+            className="w-full text-center py-3 bg-gradient-to-r from-[#8a6c37] to-[#d4b47c] text-white font-semibold uppercase tracking-wider text-xs rounded-xl shadow-md mt-2"
           >
             {t.contact}
           </a>
