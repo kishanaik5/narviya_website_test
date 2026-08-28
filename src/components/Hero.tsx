@@ -29,12 +29,13 @@ export default function Hero({ lang }: HeroProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         {/* Left Column: Typography & CTAs */}
         <div className="lg:col-span-7 flex flex-col space-y-6 text-center lg:text-left items-center lg:items-start">
-          {/* Subtle Tagline */}
-          <div className="inline-flex items-center space-x-2 animate-fade-in opacity-0" style={{ animationDelay: "0.2s" }}>
+          {/* Subtle Tagline with comfortable mobile padding */}
+          <div className="inline-flex items-center space-x-2 pt-4 pb-2 px-4 sm:px-0 mb-1 animate-fade-in opacity-0" style={{ animationDelay: "0.2s" }}>
             <span className="h-[1px] w-8 bg-primary"></span>
-            <span className="text-xs uppercase tracking-[0.3em] font-sans font-semibold text-primary">
+            <span className="text-xs uppercase tracking-[0.25em] font-sans font-semibold text-primary">
               {t.tagline}
             </span>
+            <span className="h-[1px] w-8 bg-primary lg:hidden"></span>
           </div>
 
           {/* Animated Heading */}

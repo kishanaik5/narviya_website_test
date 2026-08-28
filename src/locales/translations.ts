@@ -162,7 +162,7 @@ export const translations = {
     card: {
       tagline: "Official Credentials",
       title: "Digital Visiting Card",
-      subtitle: "Save or download our official studio visiting card. View direct contacts, studio location, and consultation channels.",
+      subtitle: "Save or download our official visiting card. Available all working days from 8:00 AM to 8:00 PM.",
       flipPrompt: "Tap card to flip front & back",
       frontLabel: "Front Side",
       backLabel: "Back Side",
@@ -173,7 +173,7 @@ export const translations = {
       copied: "Copied to clipboard!",
       copyPhone: "Copy Phone",
       copyEmail: "Copy Email",
-      openMap: "Studio Location",
+      openMap: "Consultation Channels",
       dimensions: "Standard 3.5\" × 2\" (Print-Ready)",
     }
   },
@@ -318,8 +318,8 @@ export const translations = {
       message: "ನಾವು ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು? (ಉದಾ: ಲಿವಿಂಗ್ ರೂಮ್ ವಿನ್ಯಾಸ, ಸೇಫ್ಟಿ ನೆಟ್‌ಗಳು, ಆಫೀಸ್ ಗ್ಲಾಸ್ ಗೋಡೆ...)",
       submit: "ಮಾಹಿತಿ ಕಳುಹಿಸಿ",
       success: "ಧನ್ಯವಾದಗಳು! ನಮ್ಮ ಹಿರಿಯ ವಿನ್ಯಾಸಕರು ಮುಂದಿನ 24 ಗಂಟೆಗಳಲ್ಲಿ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲಿದ್ದಾರೆ.",
-      addressTitle: "ನಮ್ಮ ವಿಳಾಸ",
-      addressValue: "12ನೇ ಕ್ರಾಸ್, ಸೆಕ್ಟರ್ 7, ಹೆಚ್.ಎಸ್.ಆರ್ ಲೇಔಟ್, ಬೆಂಗಳೂರು, ಕರ್ನಾಟಕ - 560102",
+      addressTitle: "ಕೆಲಸದ ಸಮಯ",
+      addressValue: "ಎಲ್ಲ ಕೆಲಸದ ದಿನಗಳು: ಬೆಳಿಗ್ಗೆ 8:00 – ರಾತ್ರಿ 8:00",
       phoneTitle: "ದೂರವಾಣಿ ಸಂಖ್ಯೆಗಳು",
       emailTitle: "ಇಮೇಲ್ ಕಳುಹಿಸಿ",
     },
@@ -336,7 +336,7 @@ export const translations = {
     card: {
       tagline: "ಅಧಿಕೃತ ಗುರುತು",
       title: "ಡಿಜಿಟಲ್ ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್",
-      subtitle: "ನಮ್ಮ ಅಧಿಕೃತ ಸ್ಟುಡಿಯೋ ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್ ಅನ್ನು ಉಳಿಸಿಕೊಳ್ಳಿ ಅಥವಾ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ. ನಮ್ಮ ನೇರ ಸಂಪರ್ಕಗಳು ಮತ್ತು ವಿಳಾಸದ ಮಾಹಿತಿ ಇಲ್ಲಿದೆ.",
+      subtitle: "ನಮ್ಮ ಅಧಿಕೃತ ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್ ಅನ್ನು ಉಳಿಸಿಕೊಳ್ಳಿ ಅಥವಾ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ. ಎಲ್ಲ ಕೆಲಸದ ದಿನಗಳಲ್ಲಿ ಬೆಳಿಗ್ಗೆ 8:00 ರಿಂದ ರಾತ್ರಿ 8:00 ರವರೆಗೆ ಲಭ್ಯವಿದೆ.",
       flipPrompt: "ಮುಂಭಾಗ ಮತ್ತು ಹಿಂಭಾಗವನ್ನು ನೋಡಲು ಕಾರ್ಡ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ",
       frontLabel: "ಮುಂಭಾಗ",
       backLabel: "ಹಿಂಭಾಗ",
@@ -347,7 +347,7 @@ export const translations = {
       copied: "ನಕಲಿಸಲಾಗಿದೆ!",
       copyPhone: "ಫೋನ್ ನಕಲಿಸಿ",
       copyEmail: "ಇಮೇಲ್ ನಕಲಿಸಿ",
-      openMap: "ಸ್ಟುಡಿಯೋ ವಿಳಾಸ",
+      openMap: "ಸಂಪರ್ಕ ಮಾರ್ಗಗಳು",
       dimensions: "ಪ್ರಮಾಣಿತ 3.5\" × 2\" (ಮುದ್ರಣಕ್ಕೆ ಸಿದ್ಧ)",
     }
   }

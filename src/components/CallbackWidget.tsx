@@ -344,12 +344,22 @@ export default function CallbackWidget({ lang }: CallbackWidgetProps) {
                     style={{ transformStyle: "preserve-3d" }}
                   >
                     {/* Front */}
-                    <div className="absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all">
+                    <div
+                      className={`absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all ${
+                        isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
+                      }`}
+                      style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+                    >
                       <CardFront onDownload={handleDownloadPdf} isDownloading={isDownloading} />
                     </div>
 
                     {/* Back */}
-                    <div className="absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all">
+                    <div
+                      className={`absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all ${
+                        !isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
+                      }`}
+                      style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+                    >
                       <CardBack onDownload={handleDownloadPdf} isDownloading={isDownloading} />
                     </div>
                   </div>

@@ -173,12 +173,28 @@ export default function Footer({ lang }: FooterProps) {
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* FRONT SIDE with top right download icon */}
-                <div className="absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all duration-300">
+                <div
+                  className={`absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all duration-300 ${
+                    isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
+                  }`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                  }}
+                >
                   <CardFront onDownload={handleDownloadPdf} isDownloading={isDownloading} />
                 </div>
 
                 {/* BACK SIDE with top right download icon */}
-                <div className="absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all duration-300">
+                <div
+                  className={`absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all duration-300 ${
+                    !isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
+                  }`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                  }}
+                >
                   <CardBack onDownload={handleDownloadPdf} isDownloading={isDownloading} />
                 </div>
               </div>
@@ -200,10 +216,10 @@ export default function Footer({ lang }: FooterProps) {
         <p className="flex items-center gap-1.5 text-neutral-400">
           <span>Designed &amp; Built by</span>
           <a
-            href="https://kishan-k.pages.dev"
+            href="https://kishan-k.pages.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#c4ab7c] hover:text-[#fdfcf9] font-medium underline underline-offset-4 decoration-[#c4ab7c]/40 hover:decoration-[#c4ab7c] transition-colors"
+            className="text-[#c4ab7c] hover:text-[#fdfcf9] font-medium underline underline-offset-4 decoration-[#c4ab7c]/40 hover:decoration-[#c4ab7c] transition-colors cursor-pointer touch-manipulation"
           >
             KISHAN K
           </a>

@@ -246,10 +246,20 @@ export default function BusinessCard() {
             flipped ? "rotate-y-180" : ""
           }`}
         >
-          <div className="absolute inset-0 backface-hidden">
+          <div
+            className={`absolute inset-0 backface-hidden transition-opacity duration-300 ${
+              flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+          >
             <CardFront />
           </div>
-          <div className="absolute inset-0 backface-hidden rotate-y-180">
+          <div
+            className={`absolute inset-0 backface-hidden rotate-y-180 transition-opacity duration-300 ${
+              !flipped ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+          >
             <CardBack />
           </div>
         </div>

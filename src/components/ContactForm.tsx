@@ -243,20 +243,19 @@ export default function ContactForm({ lang }: ContactFormProps) {
 
             {/* Contact details cards */}
             <div className="space-y-8">
-              {/* Location / Presence */}
+              {/* Working Hours */}
               <div className="flex items-start space-x-4">
                 <div className="p-3 border border-plaster-border bg-white text-primary flex-shrink-0">
                   <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
                   <h4 className="font-serif text-lg font-medium text-neutral-900 mb-1">
-                    {lang === "en" ? "Service Region" : "ಸೇವಾ ಪ್ರದೇಶ"}
+                    {lang === "en" ? "Working Hours" : "ಕೆಲಸದ ಸಮಯ"}
                   </h4>
-                  <p className="font-sans text-xs text-neutral-500 font-light leading-relaxed">
-                    {siteConfig.city}
+                  <p className="font-sans text-xs text-neutral-600 font-medium leading-relaxed">
+                    {lang === "en" ? "All Working Days: 8:00 AM – 8:00 PM" : "ಎಲ್ಲ ಕೆಲಸದ ದಿನಗಳು: ಬೆಳಿಗ್ಗೆ 8:00 – ರಾತ್ರಿ 8:00"}
                   </p>
                 </div>
               </div>

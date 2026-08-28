@@ -179,7 +179,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(1.03);
 }
 
-/* 3D Card Flip Styles — Razor Sharp Anti-Blur */
+/* 3D Card Flip Styles — Razor Sharp Anti-Blur & Anti-Bleed */
 .perspective-1000 {
   perspective: 1200px;
   -webkit-perspective: 1200px;
@@ -194,11 +194,10 @@ h1, h2, h3, h4, h5, h6 {
 .backface-hidden {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
-  image-rendering: -webkit-optimize-contrast;
 }
 
 .rotate-y-180 {

@@ -16,10 +16,10 @@ export const siteConfig = {
   phone: "+91 93538 75064",
   whatsapp: "+91 93538 75064",
   address: "",
-  city: "Bengaluru, Karnataka",
+  city: "",
   hours: {
-    weekdays: "Mon – Sat: 9:30 AM – 7:30 PM",
-    sunday: "Sunday: By Appointment",
+    weekdays: "All Working Days: 8:00 AM – 8:00 PM",
+    sunday: "Available Daily: 8:00 AM – 8:00 PM",
   },
 
   // ---- Social ----
