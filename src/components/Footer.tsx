@@ -203,10 +203,10 @@ export default function Footer({ lang }: FooterProps) {
               </span>
             </div>
 
-            {/* Credit Card Container: Vertical portrait on mobile (rotated 90deg card shape with upright text) / Landscape on desktop */}
+            {/* Luxury Visiting Card Container */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="perspective-1000 w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[340px] aspect-[1/1.42] sm:aspect-[1.75/1] mx-auto lg:mx-0 cursor-pointer touch-manipulation relative group"
+              className="perspective-1000 w-full max-w-[340px] aspect-[1.75/1] mx-auto lg:mx-0 cursor-pointer touch-manipulation relative group"
               title={lang === "en" ? "Click/tap to flip card" : "ಕಾರ್ಡ್ ತಿರುಗಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"}
             >
               {/* Rotating 3D card body */}
