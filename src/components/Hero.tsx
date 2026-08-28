@@ -106,6 +106,10 @@ export default function Hero({ lang }: HeroProps) {
             <img
               src="/images/hero-bg.webp"
               alt={`${siteConfig.brandName} Luxury Living Space Showcase`}
+              loading="eager"
+              fetchPriority="high"
+              width={600}
+              height={750}
               className="w-full h-full object-cover zoom-image opacity-90"
               onError={(e) => {
                 // Fallback if image fails or doesn't exist yet

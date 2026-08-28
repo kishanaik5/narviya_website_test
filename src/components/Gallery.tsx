@@ -149,6 +149,9 @@ export default function Gallery({ lang }: GalleryProps) {
                 <img
                   src={p.image}
                   alt={lang === "en" ? p.titleEn : p.titleKn}
+                  loading="lazy"
+                  width={600}
+                  height={450}
                   className="w-full h-full object-cover zoom-image opacity-95"
                 />
                 <div className="absolute inset-0 bg-neutral-950/5 mix-blend-overlay"></div>

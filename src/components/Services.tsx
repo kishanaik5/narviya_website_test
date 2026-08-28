@@ -158,6 +158,9 @@ export default function Services({ lang }: ServicesProps) {
                 <img
                   src={item.image}
                   alt={item.name}
+                  loading="lazy"
+                  width={600}
+                  height={375}
                   className="w-full h-full object-cover zoom-image opacity-95"
                   onError={(e) => {
                     // Failbacks

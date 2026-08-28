@@ -134,6 +134,9 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
               <img
                 src={currentMaterial.image}
                 alt={currentMaterial.title}
+                loading="lazy"
+                width={600}
+                height={450}
                 className="w-full h-full object-cover zoom-image opacity-95"
                 onError={(e) => {
                   if (currentMaterial.id === "wood") e.currentTarget.src = "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=800";

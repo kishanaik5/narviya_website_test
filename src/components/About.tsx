@@ -24,6 +24,9 @@ export default function About({ lang }: AboutProps) {
               <img
                 src="/images/hero-bg.webp"
                 alt={`${siteConfig.brandName} Experience Center`}
+                loading="lazy"
+                width={500}
+                height={625}
                 className="w-full h-full object-cover zoom-image opacity-95"
               />
               <div className="absolute inset-0 bg-neutral-950/20 mix-blend-overlay"></div>
