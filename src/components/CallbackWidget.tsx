@@ -26,53 +26,21 @@ export default function CallbackWidget({ lang }: CallbackWidgetProps) {
   const t = translations[lang].callback;
   const cardT = translations[lang].card;
 
-  // PDF Export Handler
+  // PDF Export Handler (Directly downloads narvia-card.pdf)
   const handleDownloadPdf = async (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     try {
       setIsDownloading(true);
+      const { downloadCardPdf } = await import("@/lib/downloadCardPdf");
+      const success = await downloadCardPdf();
 
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
-
-      const frontEl = document.getElementById("pdf-widget-card-front");
-      const backEl = document.getElementById("pdf-widget-card-back");
-
-      if (!frontEl || !backEl) {
-        throw new Error("Card elements not found");
+      if (success) {
+        setStatusType("success");
+        setStatusMsg(lang === "en" ? "narvia-card.pdf Downloaded!" : "narvia-card.pdf ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ!");
+        setTimeout(() => setStatusMsg(""), 3000);
       }
-
-      const frontCanvas = await html2canvas(frontEl, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
-      const backCanvas = await html2canvas(backEl, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: [88.9, 50.8],
-      });
-
-      pdf.addImage(frontCanvas.toDataURL("image/png"), "PNG", 0, 0, 88.9, 50.8, undefined, "FAST");
-      pdf.addPage([88.9, 50.8], "landscape");
-      pdf.addImage(backCanvas.toDataURL("image/png"), "PNG", 0, 0, 88.9, 50.8, undefined, "FAST");
-
-      pdf.save("narvia-visiting-card.pdf");
-      setStatusType("success");
-      setStatusMsg(lang === "en" ? "PDF Downloaded!" : "PDF ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ!");
-      setTimeout(() => setStatusMsg(""), 3000);
     } catch (err) {
       console.error("PDF generation failed:", err);
-      window.print();
     } finally {
       setIsDownloading(false);
     }

@@ -15,58 +15,20 @@ export default function Footer({ lang }: FooterProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // PDF Export Handler for the Visiting Card
+  // PDF Export Handler for the Visiting Card (Downloads 'narvia-card.pdf' directly)
   const handleDownloadPdf = async (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     try {
       setIsDownloading(true);
+      const { downloadCardPdf } = await import("@/lib/downloadCardPdf");
+      const success = await downloadCardPdf();
 
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
-
-      const frontEl = document.getElementById("pdf-footer-card-front");
-      const backEl = document.getElementById("pdf-footer-card-back");
-
-      if (!frontEl || !backEl) {
-        throw new Error("Card export sources not found");
+      if (success) {
+        setToastMsg("narvia-card.pdf Downloaded!");
+        setTimeout(() => setToastMsg(null), 3000);
       }
-
-      // Render high-res canvases for crisp 300dpi output
-      const frontCanvas = await html2canvas(frontEl, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
-      const backCanvas = await html2canvas(backEl, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
-      // Standard Business Card dimensions: 3.5 in x 2 in (88.9 mm x 50.8 mm)
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: [88.9, 50.8],
-      });
-
-      // Page 1: Front
-      pdf.addImage(frontCanvas.toDataURL("image/png"), "PNG", 0, 0, 88.9, 50.8, undefined, "FAST");
-
-      // Page 2: Back
-      pdf.addPage([88.9, 50.8], "landscape");
-      pdf.addImage(backCanvas.toDataURL("image/png"), "PNG", 0, 0, 88.9, 50.8, undefined, "FAST");
-
-      pdf.save("narvia-visiting-card.pdf");
-
-      setToastMsg("Visiting Card PDF Downloaded!");
-      setTimeout(() => setToastMsg(null), 3000);
     } catch (err) {
       console.error("PDF generation failed:", err);
-      window.print();
     } finally {
       setIsDownloading(false);
     }
