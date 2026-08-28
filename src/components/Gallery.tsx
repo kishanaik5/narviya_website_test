@@ -31,7 +31,7 @@ export default function Gallery({ lang }: GalleryProps) {
       category: "interiors",
       titleEn: "The Clay & Timber House",
       titleKn: "ದಿ ಕ್ಲೇ ಮತ್ತು ಟಿಂಬರ್ ಹೌಸ್",
-      descEn: "A human-centric, light-filled family home prioritizing tactile woods and lime plaster in HSR Layout.",
+      descEn: "Concept: a light-filled family home built around tactile wood and lime plaster.",
       descKn: "ನೈಸರ್ಗಿಕ ಮರ ಮತ್ತು ಜೇಡಿಮಣ್ಣಿನ ಪ್ಲಾಸ್ಟರ್‌ನೊಂದಿಗೆ ನಿರ್ಮಿಸಿದ ಅತಿ ಸುಂದರ ಮನೆ.",
       image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600",
       tagsEn: ["Residential", "Teak Wood", "Linen"],
@@ -98,16 +98,16 @@ export default function Gallery({ lang }: GalleryProps) {
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="gallery" className="py-28 bg-[#faf8f5] dark:bg-[#141311] transition-colors duration-500 border-b border-plaster-border">
+    <section id="gallery" className="py-28 bg-[#faf8f5] border-b border-plaster-border">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Heading */}
         <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
           <span className="editorial-subtitle">{lang === "en" ? "Selected Works" : "ಕೃತಿಗಳು"}</span>
-          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900 dark:text-white">
+          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900">
             {t.title}
           </h2>
           <div className="w-12 h-[1px] bg-primary/60 mx-auto"></div>
-          <p className="font-sans text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed max-w-xl mx-auto">
+          <p className="font-sans text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto">
             {t.subtitle}
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function Gallery({ lang }: GalleryProps) {
               className={`pb-4 px-3 font-serif text-lg tracking-wide transition-all duration-500 relative cursor-pointer ${
                 filter === btn.id
                   ? "text-primary font-medium"
-                  : "text-neutral-400 dark:text-neutral-600 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  : "text-neutral-400 hover:text-neutral-800"
               }`}
             >
               {btn.label}
@@ -142,14 +142,14 @@ export default function Gallery({ lang }: GalleryProps) {
           {filteredProjects.map((p) => (
             <div
               key={p.id}
-              className="editorial-card group overflow-hidden border border-plaster-border bg-white dark:bg-bg-dark flex flex-col justify-between"
+              className="editorial-card group overflow-hidden border border-plaster-border bg-white flex flex-col justify-between"
             >
               {/* Image Visual with floating tags */}
               <div className="relative aspect-[4/3] w-full overflow-hidden zoom-container border-b border-plaster-border">
                 <img
                   src={p.image}
                   alt={lang === "en" ? p.titleEn : p.titleKn}
-                  className="w-full h-full object-cover zoom-image opacity-95 dark:opacity-85"
+                  className="w-full h-full object-cover zoom-image opacity-95"
                 />
                 <div className="absolute inset-0 bg-neutral-950/5 mix-blend-overlay"></div>
                 
@@ -169,10 +169,10 @@ export default function Gallery({ lang }: GalleryProps) {
               {/* Text descriptions */}
               <div className="p-6 space-y-4">
                 <div className="space-y-1">
-                  <h3 className="font-serif text-xl font-medium text-neutral-900 dark:text-white group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-serif text-xl font-medium text-neutral-900 group-hover:text-primary transition-colors duration-300">
                     {lang === "en" ? p.titleEn : p.titleKn}
                   </h3>
-                  <p className="font-sans text-[11px] text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
+                  <p className="font-sans text-[11px] text-neutral-500 font-light leading-relaxed">
                     {lang === "en" ? p.descEn : p.descKn}
                   </p>
                 </div>

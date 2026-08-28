@@ -58,7 +58,7 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
   const currentMaterial = materialsList.find((m) => m.id === activeTab)!;
 
   return (
-    <section id="materials" className="py-24 bg-bg-light dark:bg-bg-dark transition-colors duration-500">
+    <section id="materials" className="py-24 bg-bg-light">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -66,7 +66,7 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
             {t.title}
           </h2>
           <div className="w-16 h-[2px] bg-primary mx-auto mb-6"></div>
-          <p className="text-neutral-600 dark:text-neutral-400 font-sans font-light">
+          <p className="text-neutral-600 font-sans font-light">
             {t.subtitle}
           </p>
         </div>
@@ -74,15 +74,15 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
         {/* Outer Box */}
         <div className="glass-panel border border-luxury-border/30 overflow-hidden shadow-xl">
           {/* Tabs bar */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-luxury-border/30 bg-neutral-100/50 dark:bg-neutral-900/30">
+          <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-luxury-border/30 bg-neutral-100/50">
             {materialsList.map((m) => (
               <button
                 key={m.id}
                 onClick={() => setActiveTab(m.id)}
                 className={`py-6 px-4 font-serif text-lg tracking-wide transition-all duration-300 border-r border-luxury-border/10 last:border-r-0 cursor-pointer ${
                   activeTab === m.id
-                    ? "bg-bg-light dark:bg-bg-dark text-primary font-semibold border-t-2 border-t-primary"
-                    : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                    ? "bg-bg-light text-primary font-semibold border-t-2 border-t-primary"
+                    : "text-neutral-500 hover:text-neutral-800"
                 }`}
               >
                 {m.tabLabel}
@@ -94,17 +94,17 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
           <div className="p-8 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Details Column */}
             <div className="space-y-6 animate-fade-in">
-              <h3 className="font-serif text-3xl lg:text-4xl font-semibold text-neutral-900 dark:text-white">
+              <h3 className="font-serif text-3xl lg:text-4xl font-semibold text-neutral-900">
                 {currentMaterial.title}
               </h3>
-              <p className="font-sans text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
+              <p className="font-sans text-neutral-600 font-light leading-relaxed">
                 {currentMaterial.desc}
               </p>
 
               {/* Specifications checklist */}
               <div className="space-y-3 pt-4">
                 {currentMaterial.specs.map((spec, index) => (
-                  <div key={index} className="flex items-center space-x-3 text-neutral-700 dark:text-neutral-300">
+                  <div key={index} className="flex items-center space-x-3 text-neutral-700">
                     <span className="flex-shrink-0 h-5 w-5 rounded-full border border-primary/40 bg-primary/5 flex items-center justify-center text-primary">
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                         <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
@@ -134,7 +134,7 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
               <img
                 src={currentMaterial.image}
                 alt={currentMaterial.title}
-                className="w-full h-full object-cover zoom-image opacity-95 dark:opacity-80"
+                className="w-full h-full object-cover zoom-image opacity-95"
                 onError={(e) => {
                   if (currentMaterial.id === "wood") e.currentTarget.src = "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=800";
                   else if (currentMaterial.id === "glass") e.currentTarget.src = "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=800";

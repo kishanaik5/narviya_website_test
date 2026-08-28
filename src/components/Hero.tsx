@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Language, translations } from "@/locales/translations";
+import { siteConfig } from "@/config/site";
 
 interface HeroProps {
   lang: Language;
@@ -13,16 +14,16 @@ export default function Hero({ lang }: HeroProps) {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-bg-light dark:bg-bg-dark transition-colors duration-500"
+      className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-bg-light"
     >
       {/* Background Graphic Elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 dark:opacity-20">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
         <div className="absolute top-[10%] left-[5%] w-[40rem] h-[40rem] rounded-full bg-primary/10 blur-[120px]" />
         <div className="absolute bottom-[10%] right-[5%] w-[35rem] h-[35rem] rounded-full bg-primary/5 blur-[100px]" />
       </div>
 
       {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(184,144,71,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(184,144,71,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(154,125,70,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(154,125,70,0.04)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] z-0 pointer-events-none" />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
@@ -37,7 +38,7 @@ export default function Hero({ lang }: HeroProps) {
           </div>
 
           {/* Animated Heading */}
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-none tracking-tight text-neutral-900 dark:text-white">
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-none tracking-tight text-neutral-900">
             <span className="block animate-slide-up opacity-0" style={{ animationDelay: "0.3s" }}>
               {t.title1}
             </span>
@@ -48,7 +49,7 @@ export default function Hero({ lang }: HeroProps) {
 
           {/* Subtitle */}
           <p
-            className="text-base md:text-lg text-neutral-600 dark:text-neutral-300 font-sans max-w-xl font-light leading-relaxed animate-fade-in opacity-0"
+            className="text-base md:text-lg text-neutral-600 font-sans max-w-xl font-light leading-relaxed animate-fade-in opacity-0"
             style={{ animationDelay: "0.7s" }}
           >
             {t.subtitle}
@@ -67,32 +68,29 @@ export default function Hero({ lang }: HeroProps) {
             </a>
             <a
               href="#contact"
-              className="px-8 py-4 border border-luxury-border hover:border-primary text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900/50 font-sans font-semibold text-sm uppercase tracking-wider hover:shadow-sm transition-all duration-300"
+              className="px-8 py-4 border border-luxury-border hover:border-primary text-neutral-900 hover:bg-neutral-100 font-sans font-semibold text-sm uppercase tracking-wider hover:shadow-sm transition-all duration-300"
             >
               {t.ctaSecondary}
             </a>
           </div>
 
-          {/* Quick Stats */}
+          {/* Value props — replace fabricated stats with honest positioning */}
           <div
             className="grid grid-cols-3 gap-6 pt-12 border-t border-luxury-border/30 max-w-lg animate-fade-in opacity-0"
             style={{ animationDelay: "1.1s" }}
           >
             <div>
-              <span className="block font-serif text-3xl md:text-4xl font-semibold text-primary">10+</span>
-              <span className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-sans mt-1 block">
+              <span className="text-xs uppercase tracking-wider text-neutral-500 font-sans mt-1 block">
                 {t.experience}
               </span>
             </div>
             <div>
-              <span className="block font-serif text-3xl md:text-4xl font-semibold text-primary">350+</span>
-              <span className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-sans mt-1 block">
+              <span className="text-xs uppercase tracking-wider text-neutral-500 font-sans mt-1 block">
                 {t.completed}
               </span>
             </div>
             <div>
-              <span className="block font-serif text-3xl md:text-4xl font-semibold text-primary">100%</span>
-              <span className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-sans mt-1 block">
+              <span className="text-xs uppercase tracking-wider text-neutral-500 font-sans mt-1 block">
                 {t.satisfied}
               </span>
             </div>
@@ -107,8 +105,8 @@ export default function Hero({ lang }: HeroProps) {
           <div className="relative w-full h-full overflow-hidden group zoom-container">
             <img
               src="/images/hero-bg.webp"
-              alt="Narviya Designers Luxury Living Space Showcase"
-              className="w-full h-full object-cover zoom-image opacity-90 dark:opacity-80"
+              alt={`${siteConfig.brandName} Luxury Living Space Showcase`}
+              className="w-full h-full object-cover zoom-image opacity-90"
               onError={(e) => {
                 // Fallback if image fails or doesn't exist yet
                 e.currentTarget.src = "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200";

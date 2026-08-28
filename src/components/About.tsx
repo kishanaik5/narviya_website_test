@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Language, translations } from "@/locales/translations";
+import { siteConfig } from "@/config/site";
 
 interface AboutProps {
   lang: Language;
@@ -11,7 +12,7 @@ export default function About({ lang }: AboutProps) {
   const t = translations[lang].about;
 
   return (
-    <section id="about" className="py-24 bg-bg-light dark:bg-bg-dark transition-colors duration-500 relative overflow-hidden">
+    <section id="about" className="py-24 bg-bg-light relative overflow-hidden">
       {/* Decorative side element */}
       <div className="absolute right-0 top-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
 
@@ -22,8 +23,8 @@ export default function About({ lang }: AboutProps) {
             <div className="relative w-full h-full overflow-hidden zoom-container">
               <img
                 src="/images/hero-bg.webp"
-                alt="Narviya Designers Experience Center"
-                className="w-full h-full object-cover zoom-image opacity-95 dark:opacity-85"
+                alt={`${siteConfig.brandName} Experience Center`}
+                className="w-full h-full object-cover zoom-image opacity-95"
               />
               <div className="absolute inset-0 bg-neutral-950/20 mix-blend-overlay"></div>
             </div>
@@ -38,24 +39,24 @@ export default function About({ lang }: AboutProps) {
               </span>
             </div>
 
-            <h2 className="font-serif text-4xl md:text-5xl font-medium tracking-tight text-neutral-900 dark:text-white">
+            <h2 className="font-serif text-4xl md:text-5xl font-medium tracking-tight text-neutral-900">
               {t.title}
             </h2>
 
             <div className="w-16 h-[2px] bg-primary mb-2"></div>
 
-            <p className="font-sans text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
+            <p className="font-sans text-neutral-600 font-light leading-relaxed">
               {t.desc1}
             </p>
 
-            <p className="font-sans text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
+            <p className="font-sans text-neutral-600 font-light leading-relaxed">
               {t.desc2}
             </p>
 
             {/* Mission Highlight Card */}
-            <div className="p-6 border-l-2 border-primary bg-neutral-50 dark:bg-neutral-900/50 glass-panel">
-              <span className="block font-serif italic text-lg text-neutral-800 dark:text-neutral-200">
-                "{t.mission}"
+            <div className="p-6 border-l-2 border-primary bg-neutral-50 glass-panel">
+              <span className="block font-serif italic text-lg text-neutral-800">
+                &ldquo;{t.mission}&rdquo;
               </span>
             </div>
           </div>

@@ -36,7 +36,7 @@ export default function Services({ lang }: ServicesProps) {
       id: "ceiling",
       name: t.residential.ceiling.name,
       desc: t.residential.ceiling.desc,
-      image: "https://images.unsplash.com/photo-1502005229762-fc1b2b812ca5?auto=format&fit=crop&q=80&w=600"
+      image: "/images/service-ceiling.jpg"
     }
   ];
 
@@ -110,16 +110,16 @@ export default function Services({ lang }: ServicesProps) {
   const activeItems = getActiveItems();
 
   return (
-    <section id="services" className="py-28 bg-[#faf8f5] dark:bg-[#141311] transition-colors duration-500 border-b border-plaster-border">
+    <section id="services" className="py-28 bg-[#faf8f5] border-b border-plaster-border">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
           <span className="editorial-subtitle">{lang === "en" ? "Collections" : "ಸೇವೆಗಳು"}</span>
-          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900 dark:text-white">
+          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900">
             {t.title}
           </h2>
           <div className="w-12 h-[1px] bg-primary/60 mx-auto"></div>
-          <p className="font-sans text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed max-w-xl mx-auto">
+          <p className="font-sans text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto">
             {t.subtitle}
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function Services({ lang }: ServicesProps) {
               className={`pb-4 px-3 font-serif text-xl md:text-2xl tracking-wide transition-all duration-500 relative cursor-pointer ${
                 activeTab === tab
                   ? "text-primary font-medium"
-                  : "text-neutral-400 dark:text-neutral-600 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  : "text-neutral-400 hover:text-neutral-800"
               }`}
             >
               {tab === "residential" && t.residential.title}
@@ -148,17 +148,17 @@ export default function Services({ lang }: ServicesProps) {
 
         {/* Editorial Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {activeItems.map((item, idx) => (
+          {activeItems.map((item) => (
             <div
               key={item.id}
-              className="editorial-card group overflow-hidden border border-plaster-border bg-white dark:bg-bg-dark flex flex-col justify-between"
+              className="editorial-card group overflow-hidden border border-plaster-border bg-white flex flex-col justify-between"
             >
               {/* Image Frame */}
               <div className="relative aspect-[16/10] w-full overflow-hidden zoom-container border-b border-plaster-border">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-full object-cover zoom-image opacity-95 dark:opacity-85"
+                  className="w-full h-full object-cover zoom-image opacity-95"
                   onError={(e) => {
                     // Failbacks
                     if (item.id === "living") e.currentTarget.src = "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600";
@@ -177,12 +177,12 @@ export default function Services({ lang }: ServicesProps) {
                     {activeTab === "commercial" && (lang === "en" ? "Commercial Architecture" : "ಕಚೇರಿ ವಿನ್ಯಾಸ")}
                     {activeTab === "outdoor" && (lang === "en" ? "Exterior Protection" : "ಹೊರಾಂಗಣ ಮತ್ತು ಸೇಫ್ಟಿ")}
                   </span>
-                  <h3 className="font-serif text-2xl font-light text-neutral-900 dark:text-white group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-serif text-2xl font-light text-neutral-900 group-hover:text-primary transition-colors duration-300">
                     {item.name}
                   </h3>
                 </div>
                 
-                <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                <p className="font-sans text-xs text-neutral-600 font-light leading-relaxed">
                   {item.desc}
                 </p>
                 

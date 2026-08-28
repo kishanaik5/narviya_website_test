@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Narviya Designers | Premium Interior & Exterior Spaces",
-  description: "Narviya Designers delivers exquisite custom interiors, luxury finishing, glass architecture, wood styling, and durable outdoor safety solutions. Crafted for lifetime durability.",
+  title: siteConfig.metaTitle,
+  description: siteConfig.metaDescription,
 };
 
 export default function RootLayout({
@@ -13,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="antialiased min-h-screen flex flex-col">
+      <body className="antialiased min-h-screen flex flex-col bg-bg-light text-foreground">
         {children}
       </body>
     </html>

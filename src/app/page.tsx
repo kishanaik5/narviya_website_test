@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Language } from "@/locales/translations";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
@@ -13,23 +13,15 @@ import Footer from "@/components/Footer";
 import CallbackWidget from "@/components/CallbackWidget";
 
 export default function Home() {
-  const [lang, setLang] = useState<Language>("en");
-
-  // Load language preference from local storage if available
-  useEffect(() => {
-    const savedLang = localStorage.getItem("preferredLanguage") as Language;
-    if (savedLang === "en" || savedLang === "kn") {
-      setLang(savedLang);
+  const [lang, setLang] = useState<Language>(() => {
+    if (typeof window !== "undefined") {
+      const savedLang = localStorage.getItem("preferredLanguage") as Language;
+      if (savedLang === "en" || savedLang === "kn") {
+        return savedLang;
+      }
     }
-
-    // Set initial theme (dark mode by default for premium branding visual)
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-    } else {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+    return "en";
+  });
 
   const handleLanguageChange = (newLang: Language) => {
     setLang(newLang);
