@@ -2,7 +2,15 @@ import { siteConfig } from "@/config/site";
 
 export async function downloadCardPdf(): Promise<boolean> {
   try {
-    const { jsPDF } = await import("jspdf");
+    let jsPDF;
+    try {
+      // @ts-ignore
+      const module = await import(/* webpackIgnore: true */ "jspdf");
+      jsPDF = module.jsPDF || module.default;
+    } catch {
+      console.warn("jsPDF module not dynamically loaded");
+      return false;
+    }
 
     // Standard business card dimensions in mm: 88.9mm x 50.8mm (3.5" x 2")
     const pdf = new jsPDF({
