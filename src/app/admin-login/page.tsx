@@ -13,22 +13,36 @@ export default function AdminLoginPage() {
   const [loginSubmitting, setLoginSubmitting] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string>('');
 
-  // Check if already logged in -> redirect to /admin/dashboard
+  // Check session status on mount
   useEffect(() => {
     const checkSession = async () => {
       try {
         setLoading(true);
+        // Try server API first
         const res = await fetch('/api/admin/session', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.authenticated) {
-          router.replace('/admin/dashboard');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated) {
+            router.replace('/admin/dashboard');
+            return;
+          }
         }
       } catch (err) {
-        console.error('Session check error:', err);
-      } finally {
-        setLoading(false);
+        console.log('Server session check unavailable, fallback to client auth check:', err);
       }
+
+      // Fallback: Check localStorage for static export
+      if (typeof window !== 'undefined') {
+        const isAuth = localStorage.getItem('nariva_admin_auth') === 'true';
+        if (isAuth) {
+          router.replace('/admin/dashboard');
+          return;
+        }
+      }
+
+      setLoading(false);
     };
+
     checkSession();
   }, [router]);
 
@@ -43,25 +57,43 @@ export default function AdminLoginPage() {
 
     setLoginSubmitting(true);
     try {
+      // 1. Try Server API Login
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginUsername, password: loginPassword }),
       });
-      const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        setLoginError(data.error || 'Invalid username or password.');
-      } else {
-        // Redirect to /admin/dashboard on success
-        router.push('/admin/dashboard');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('nariva_admin_auth', 'true');
+            localStorage.setItem('nariva_admin_user', loginUsername.trim());
+          }
+          router.push('/admin/dashboard');
+          return;
+        }
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setLoginError('An unexpected network error occurred. Please try again.');
-    } finally {
-      setLoginSubmitting(false);
+      console.warn('Server API login unreached, falling back to static client verification:', err);
     }
+
+    // 2. Fallback Client-side Verification (for static export on Cloudflare Pages)
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('nariva_admin_username') || 'admin';
+      const storedPass = localStorage.getItem('nariva_admin_password') || 'admin123';
+
+      if (loginUsername.trim() === storedUser && loginPassword === storedPass) {
+        localStorage.setItem('nariva_admin_auth', 'true');
+        localStorage.setItem('nariva_admin_user', loginUsername.trim());
+        router.push('/admin/dashboard');
+        return;
+      }
+    }
+
+    setLoginError('Invalid username or password.');
+    setLoginSubmitting(false);
   };
 
   return (
@@ -99,7 +131,7 @@ export default function AdminLoginPage() {
         {loading ? (
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-[#9a7d46] border-t-transparent rounded-full animate-spin" />
-            <p className="text-xs text-[#c4ab7c] tracking-wider uppercase">Checking session status...</p>
+            <p className="text-xs text-[#c4ab7c] tracking-wider uppercase font-medium">Checking session status...</p>
           </div>
         ) : (
           <div className="w-full max-w-md bg-[#25221d] border border-[#9a7d46]/30 rounded-2xl p-8 shadow-2xl relative z-10 backdrop-blur-xl">
@@ -110,7 +142,7 @@ export default function AdminLoginPage() {
                 </svg>
               </div>
               <h1 className="font-serif text-3xl text-[#fdfcf9] mb-2 font-light">Admin Access</h1>
-              <p className="text-xs text-[#a09789]">Enter credentials to access admin features & tools</p>
+              <p className="text-xs text-[#a09789]">Enter credentials to access admin tools</p>
             </div>
 
             {/* Test Credentials Box */}
@@ -119,7 +151,7 @@ export default function AdminLoginPage() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Testing Admin Credentials</span>
+                <span>Default Admin Credentials</span>
               </div>
               <div>Username: <strong className="text-white font-mono bg-black/40 px-1.5 py-0.5 rounded">admin</strong></div>
               <div>Password: <strong className="text-white font-mono bg-black/40 px-1.5 py-0.5 rounded">admin123</strong></div>
