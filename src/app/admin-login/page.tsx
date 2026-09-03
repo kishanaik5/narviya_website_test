@@ -145,18 +145,6 @@ export default function AdminLoginPage() {
               <p className="text-xs text-[#a09789]">Enter credentials to access admin tools</p>
             </div>
 
-            {/* Test Credentials Box */}
-            <div className="mb-6 p-4 rounded-xl bg-[#9a7d46]/10 border border-[#9a7d46]/25 text-xs text-[#d8cebe] space-y-1">
-              <div className="font-medium text-[#c4ab7c] flex items-center gap-1.5 mb-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Default Admin Credentials</span>
-              </div>
-              <div>Username: <strong className="text-white font-mono bg-black/40 px-1.5 py-0.5 rounded">admin</strong></div>
-              <div>Password: <strong className="text-white font-mono bg-black/40 px-1.5 py-0.5 rounded">admin123</strong></div>
-            </div>
-
             {/* Error Message */}
             {loginError && (
               <div className="mb-6 p-3 rounded-lg bg-red-950/60 border border-red-500/40 text-xs text-red-200 flex items-center gap-2">
@@ -176,7 +164,7 @@ export default function AdminLoginPage() {
                   type="text"
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="Enter username"
                   className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl px-4 py-3 text-sm text-[#fdfcf9] placeholder-[#6b6459] focus:outline-none focus:border-[#9a7d46] transition-all"
                   required
                 />
@@ -191,7 +179,7 @@ export default function AdminLoginPage() {
                     type={showLoginPassword ? 'text' : 'password'}
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    placeholder="admin123"
+                    placeholder="Enter password"
                     className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl px-4 py-3 text-sm text-[#fdfcf9] placeholder-[#6b6459] focus:outline-none focus:border-[#9a7d46] transition-all pr-10"
                     required
                   />

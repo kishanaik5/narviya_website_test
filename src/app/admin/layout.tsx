@@ -13,33 +13,52 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const checkAuth = async () => {
+      setLoading(true);
+
+      // 1. Check Client-side Auth First (localStorage)
+      if (typeof window !== 'undefined') {
+        const isClientAuth = localStorage.getItem('nariva_admin_auth') === 'true';
+        if (isClientAuth) {
+          const user = localStorage.getItem('nariva_admin_user') || 'admin';
+          setUsername(user);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Check Server API Session
       try {
-        setLoading(true);
         const res = await fetch('/api/admin/session', { cache: 'no-store' });
-        const data = await res.json();
-        if (!data.authenticated) {
-          router.replace('/admin-login');
-        } else {
-          setUsername(data.username || 'admin');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated) {
+            setUsername(data.username || 'admin');
+            setLoading(false);
+            return;
+          }
         }
       } catch (err) {
-        console.error('Admin layout auth error:', err);
-        router.replace('/admin-login');
-      } finally {
-        setLoading(false);
+        console.warn('Server session check unavailable:', err);
       }
+
+      // 3. If neither is authenticated, redirect to /admin-login
+      router.replace('/admin-login');
     };
 
     checkAuth();
   }, [router, pathname]);
 
   const handleLogout = async () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('nariva_admin_auth');
+      localStorage.removeItem('nariva_admin_user');
+    }
     try {
       await fetch('/api/admin/logout', { method: 'POST' });
-      router.replace('/admin-login');
     } catch (err) {
-      console.error('Logout error:', err);
+      console.warn('Logout API error:', err);
     }
+    router.replace('/admin-login');
   };
 
   if (loading) {
