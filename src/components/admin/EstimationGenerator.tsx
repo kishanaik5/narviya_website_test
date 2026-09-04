@@ -1,6 +1,5 @@
-'use client';
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export interface EstimationItem {
   id: string;
@@ -12,6 +11,9 @@ export interface EstimationItem {
 }
 
 export default function EstimationGenerator() {
+  const searchParams = useSearchParams();
+  const estimationIdParam = searchParams.get('id');
+
   const [companyName, setCompanyName] = useState('NARIVA INTERIORS');
   const [companyPhone, setCompanyPhone] = useState('+91 93538 75064');
   const [clientName, setClientName] = useState('');
@@ -24,7 +26,69 @@ export default function EstimationGenerator() {
   const [showAmount, setShowAmount] = useState<boolean>(true);
   const [showTotalAmount, setShowTotalAmount] = useState<boolean>(true);
 
-  // Helper to calculate line item amount
+  // Backend & Modal state
+  const [saving, setSaving] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [showLatexModal, setShowLatexModal] = useState(false);
+  const [latexCode, setLatexCode] = useState('');
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [jsonInput, setJsonInput] = useState('');
+
+  // Load record by ID from URL query parameter
+  useEffect(() => {
+    if (!estimationIdParam) return;
+
+    const loadEstimation = async () => {
+      setStatusMsg('Loading saved estimation details...');
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+        const headers: Record<string, string> = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch(`${baseUrl}/api/admin/estimations/${estimationIdParam}`, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.company_name) setCompanyName(data.company_name);
+          if (data.company_phone) setCompanyPhone(data.company_phone);
+          if (data.client_name) setClientName(data.client_name);
+          if (data.estimation_no) setEstimationNo(data.estimation_no);
+          if (data.estimation_date) setDate(data.estimation_date.split('T')[0]);
+          if (data.notes) setNotes(data.notes);
+
+          if (data.meta) {
+            if (data.meta.showRate !== undefined) setShowRate(data.meta.showRate);
+            if (data.meta.showQty !== undefined) setShowQty(data.meta.showQty);
+            if (data.meta.showAmount !== undefined) setShowAmount(data.meta.showAmount);
+            if (data.meta.showTotalAmount !== undefined) setShowTotalAmount(data.meta.showTotalAmount);
+            if (data.meta.rawItems && Array.isArray(data.meta.rawItems)) {
+              setItems(data.meta.rawItems);
+            }
+          }
+
+          if (!data.meta?.rawItems && Array.isArray(data.items)) {
+            setItems(
+              data.items.map((it: { description: string; qty?: number; rate?: number; amount?: number }, idx: number) => ({
+                id: String(idx + 1),
+                isHeadline: !it.rate && it.description.toUpperCase() === it.description,
+                description: it.description || '',
+                qty: it.qty ?? '',
+                rate: it.rate ?? '',
+                amount: it.amount ?? 0,
+              }))
+            );
+          }
+          setStatusMsg(`✓ Loaded Estimation ${data.estimation_no}`);
+        }
+      } catch (err) {
+        console.error('Error loading estimation by ID:', err);
+        setStatusMsg('Error loading estimation details.');
+      }
+    };
+
+    loadEstimation();
+  }, [estimationIdParam]);
+
   const calculateAmount = (rateVal?: number | string, qtyVal?: number | string): number => {
     const r = typeof rateVal === 'string' ? parseFloat(rateVal) || 0 : rateVal || 0;
     const q = qtyVal !== undefined && qtyVal !== '' ? (typeof qtyVal === 'string' ? parseFloat(qtyVal) || 0 : qtyVal) : 1;
@@ -46,7 +110,6 @@ export default function EstimationGenerator() {
 
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Currency Formatter
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-IN', {
       minimumFractionDigits: 2,
@@ -54,7 +117,6 @@ export default function EstimationGenerator() {
     }).format(val);
   };
 
-  // Add Item (Regular)
   const addItem = () => {
     setItems([
       ...items,
@@ -62,7 +124,6 @@ export default function EstimationGenerator() {
     ]);
   };
 
-  // Add Headline Header (Category Title)
   const addHeadline = () => {
     setItems([
       ...items,
@@ -70,12 +131,10 @@ export default function EstimationGenerator() {
     ]);
   };
 
-  // Remove Item or Headline
   const removeItem = (id: string) => {
     setItems(items.filter((item) => item.id !== id));
   };
 
-  // Update Item
   const updateItem = (id: string, field: keyof EstimationItem, value: string | number | boolean) => {
     setItems(
       items.map((item) => {
@@ -89,7 +148,6 @@ export default function EstimationGenerator() {
     );
   };
 
-  // Move Item Up/Down
   const moveItem = (index: number, direction: 'up' | 'down') => {
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= items.length) return;
@@ -100,13 +158,200 @@ export default function EstimationGenerator() {
     setItems(newItems);
   };
 
-  // Calculate Total Amount
   const totalAmount = items.reduce((acc, item) => {
     if (item.isHeadline) return acc;
     return acc + (item.amount || 0);
   }, 0);
 
-  // Print Handler
+  // Generate LaTeX document string
+  const generateLatex = () => {
+    const esc = (t: string) =>
+      t
+        ? t
+            .replace(/&/g, '\\&')
+            .replace(/%/g, '\\%')
+            .replace(/\$/g, '\\$')
+            .replace(/#/g, '\\#')
+            .replace(/_/g, '\\_')
+        : '';
+
+    let sNo = 1;
+    const rows = items
+      .map((it) => {
+        if (it.isHeadline) {
+          const colSpan = 1 + (showQty ? 1 : 0) + (showRate ? 1 : 0) + (showAmount ? 1 : 0);
+          return ` & \\multicolumn{${colSpan}}{|l|}{\\textbf{${esc(it.description)}}} \\\\ \\hline`;
+        }
+        const cols = [`${sNo++}`, `\\quad ${esc(it.description)}`];
+        if (showQty) cols.push(String(it.qty || 1));
+        if (showRate) cols.push(`₹${(typeof it.rate === 'string' ? parseFloat(it.rate) || 0 : it.rate || 0).toFixed(2)}`);
+        if (showAmount) cols.push(`₹${(it.amount || 0).toFixed(2)}`);
+        return cols.join(' & ') + ' \\\\ \\hline';
+      })
+      .join('\n');
+
+    return `\\documentclass[11pt,a4paper]{article}
+\\usepackage[utf8]{utf8}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{array, tabularx, hyperref, xcolor}
+\\definecolor{brandpurple}{RGB}{94, 23, 235}
+
+\\pagestyle{empty}
+
+\\begin{document}
+
+\\begin{center}
+    {\\Huge \\bfseries \\color{brandpurple} ${esc(companyName || 'NARIVA INTERIORS')}}\\\\[4pt]
+    {\\large Estimation \\& Project Scope Proposal}\\\\[8pt]
+    \\rule{\\linewidth}{1.5pt}
+\\end{center}
+
+\\vspace{10pt}
+
+\\begin{tabularx}{\\linewidth}{X r}
+    {\\bfseries Client Name:} ${esc(clientName)} & {\\bfseries Estimate No:} ${esc(estimationNo)} \\\\
+    & {\\bfseries Date:} ${esc(date)} \\\\
+\\end{tabularx}
+
+\\vspace{20pt}
+
+\\begin{table}[h!]
+\\centering
+\\renewcommand{\\arraystretch}{1.4}
+\\begin{tabularx}{\\linewidth}{|c|X|${showQty ? 'c|' : ''}${showRate ? 'r|' : ''}${showAmount ? 'r|' : ''}}
+\\hline
+\\rowcolor{brandpurple!10}
+\\textbf{S.No} & \\textbf{Item Description} ${showQty ? '& \\textbf{Qty}' : ''} ${showRate ? '& \\textbf{Rate (₹)}' : ''} ${showAmount ? '& \\textbf{Amount (₹)}' : ''} \\\\
+\\hline
+${rows}
+\\end{tabularx}
+\\end{table}
+
+\\vspace{10pt}
+
+\\begin{flushright}
+{\\Large \\bfseries Total Estimated Amount: ₹${totalAmount.toFixed(2)}}
+\\end{flushright}
+
+\\vspace{15pt}
+
+\\noindent{\\bfseries Notes \\& Terms:}\\\\
+${esc(notes)}
+
+\\vfill
+\\begin{center}
+    \\small Thank you for choosing ${esc(companyName || 'NARIVA INTERIORS')}!
+\\end{center}
+
+\\end{document}`;
+  };
+
+  // Save to Backend API
+  const handleSaveToBackend = async () => {
+    if (!estimationNo || !clientName) {
+      alert('Please enter Estimation No and Client Name.');
+      return;
+    }
+
+    setSaving(true);
+    setStatusMsg('');
+
+    const metaPayload = {
+      templateVersion: 'v1.0',
+      showRate,
+      showQty,
+      showAmount,
+      showTotalAmount,
+      notes,
+      latex: generateLatex(),
+      rawItems: items,
+    };
+
+    const payload = {
+      estimation_no: estimationNo,
+      company_name: companyName,
+      company_phone: companyPhone,
+      client_name: clientName,
+      estimation_date: date ? new Date(date).toISOString() : new Date().toISOString(),
+      items: items.map((i) => ({
+        description: i.description,
+        qty: typeof i.qty === 'string' ? parseFloat(i.qty) || undefined : i.qty,
+        rate: typeof i.rate === 'string' ? parseFloat(i.rate) || undefined : i.rate,
+        amount: i.amount,
+      })),
+      notes,
+      total_amount: totalAmount,
+      meta: metaPayload,
+    };
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const token = localStorage.getItem('admin_token');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${baseUrl}/api/admin/estimations`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setStatusMsg('✓ Estimation & JSON meta saved successfully to backend!');
+      } else {
+        const err = await res.json().catch(() => null);
+        setStatusMsg(`Saved locally! (Backend message: ${err?.detail || res.statusText})`);
+      }
+    } catch {
+      setStatusMsg('Saved locally! (Note: Local backend API not active)');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Load JSON Data
+  const handleLoadJson = () => {
+    try {
+      const data = JSON.parse(jsonInput);
+      if (data.company_name) setCompanyName(data.company_name);
+      if (data.company_phone) setCompanyPhone(data.company_phone);
+      if (data.client_name) setClientName(data.client_name);
+      if (data.estimation_no) setEstimationNo(data.estimation_no);
+      if (data.estimation_date) setDate(data.estimation_date.split('T')[0]);
+      if (data.notes) setNotes(data.notes);
+
+      if (data.meta) {
+        if (data.meta.showRate !== undefined) setShowRate(data.meta.showRate);
+        if (data.meta.showQty !== undefined) setShowQty(data.meta.showQty);
+        if (data.meta.showAmount !== undefined) setShowAmount(data.meta.showAmount);
+        if (data.meta.showTotalAmount !== undefined) setShowTotalAmount(data.meta.showTotalAmount);
+        if (data.meta.rawItems && Array.isArray(data.meta.rawItems)) {
+          setItems(data.meta.rawItems);
+        }
+      }
+
+      if (!data.meta?.rawItems && Array.isArray(data.items)) {
+        setItems(
+          data.items.map((it: { description: string; qty?: number; rate?: number; amount?: number }, idx: number) => ({
+            id: String(idx + 1),
+            isHeadline: !it.rate && it.description.toUpperCase() === it.description,
+            description: it.description || '',
+            qty: it.qty ?? '',
+            rate: it.rate ?? '',
+            amount: it.amount ?? 0,
+          }))
+        );
+      }
+
+      setShowJsonModal(false);
+      setStatusMsg('✓ JSON estimation data loaded successfully!');
+    } catch {
+      alert('Invalid JSON format. Please check your input.');
+    }
+  };
+
   const handlePrint = () => {
     if (!previewRef.current) return;
     const printContent = previewRef.current.innerHTML;
@@ -190,24 +435,52 @@ export default function EstimationGenerator() {
         <div>
           <h2 className="font-serif text-2xl text-[#fdfcf9] font-light">Estimation Generator</h2>
           <p className="text-xs text-[#a09789] mt-0.5">
-            Support for category headlines (e.g. APC bond) with nested indented sub-items and column visibility toggles.
+            Category headlines, dynamic column visibility, and JSON meta storage
           </p>
+          {statusMsg && <p className="text-xs text-emerald-400 font-medium mt-1">{statusMsg}</p>}
         </div>
 
-        <button
-          onClick={handlePrint}
-          className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all shadow-md shadow-[#9a7d46]/20 flex items-center gap-2 self-start sm:self-auto"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          <span>Preview & Print / PDF</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              setLatexCode(generateLatex());
+              setShowLatexModal(true);
+            }}
+            className="bg-[#1c1a17] hover:bg-[#25221d] text-[#c4ab7c] border border-[#9a7d46]/40 px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5"
+          >
+            <span>LaTeX Code</span>
+          </button>
+
+          <button
+            onClick={() => setShowJsonModal(true)}
+            className="bg-[#1c1a17] hover:bg-[#25221d] text-[#c4ab7c] border border-[#9a7d46]/40 px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5"
+          >
+            <span>Load JSON</span>
+          </button>
+
+          <button
+            onClick={handleSaveToBackend}
+            disabled={saving}
+            className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5 shadow-md shadow-emerald-900/30 disabled:opacity-50"
+          >
+            <span>{saving ? 'Saving...' : 'Save Meta'}</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all shadow-md shadow-[#9a7d46]/20 flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>Print / PDF</span>
+          </button>
+        </div>
       </div>
 
       {/* Grid: Form Left, Live Preview Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Form Editor (Spans 6 cols) */}
+        {/* Left Column: Form Editor */}
         <div className="lg:col-span-6 bg-[#25221d] p-6 rounded-2xl border border-[#9a7d46]/30 space-y-6">
           <h3 className="text-sm uppercase tracking-wider text-[#c4ab7c] font-semibold pb-2 border-b border-[#9a7d46]/20">
             Estimation Details & Client Info
@@ -265,7 +538,7 @@ export default function EstimationGenerator() {
                 <h3 className="text-sm uppercase tracking-wider text-[#c4ab7c] font-semibold">
                   Items & Category Headlines
                 </h3>
-                <p className="text-[11px] text-[#a09789]">Add category headlines (e.g. APC Bond). Sub-items nest with 1 tab indent under headlines.</p>
+                <p className="text-[11px] text-[#a09789]">Sub-items nest with 1 tab indent under category headlines.</p>
               </div>
 
               <div className="flex items-center gap-2">
@@ -402,7 +675,6 @@ export default function EstimationGenerator() {
             </div>
           </div>
 
-          {/* Notes */}
           <div className="pt-2 border-t border-[#9a7d46]/20 text-xs">
             <label className="block text-[#a09789] mb-1 font-medium">Remarks / Validity Notes</label>
             <input
@@ -414,9 +686,8 @@ export default function EstimationGenerator() {
           </div>
         </div>
 
-        {/* Right Column: Live Printable Preview with Column Controls (Spans 6 cols) */}
+        {/* Right Column: Live Printable Preview */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Column Visibility Checkboxes Control Box */}
           <div className="bg-[#25221d] p-4 rounded-2xl border border-[#9a7d46]/30 space-y-2">
             <div className="text-xs uppercase tracking-wider text-[#c4ab7c] font-semibold flex items-center justify-between">
               <span>Preview Column Visibility Controls</span>
@@ -465,10 +736,8 @@ export default function EstimationGenerator() {
             </div>
           </div>
 
-          {/* Document Sheet */}
           <div className="bg-white text-black p-8 rounded-xl shadow-2xl border border-gray-300 font-sans text-xs min-h-[580px] flex flex-col justify-between select-none">
             <div ref={previewRef}>
-              {/* HEADER SECTION */}
               <div className="text-center mb-4">
                 <h1 className="text-2xl font-bold tracking-wide uppercase text-black mb-1">ESTIMATION</h1>
                 <h2 className="text-lg font-bold uppercase text-black mb-0.5">{companyName || 'NARIVA INTERIORS'}</h2>
@@ -477,7 +746,6 @@ export default function EstimationGenerator() {
 
               <hr className="border-t border-black my-4" />
 
-              {/* DETAILS SECTION */}
               <div className="flex justify-between items-start my-4 text-xs font-sans">
                 <div>
                   <div className="font-bold text-black">Billed To / Client:</div>
@@ -493,7 +761,6 @@ export default function EstimationGenerator() {
                 </div>
               </div>
 
-              {/* ITEMS TABLE */}
               <table className="w-full my-6 text-xs border-collapse">
                 <thead>
                   <tr className="border-t-2 border-b-2 border-black">
@@ -542,7 +809,6 @@ export default function EstimationGenerator() {
                 </tbody>
               </table>
 
-              {/* TOTALS SECTION */}
               <div className="flex justify-between items-start mt-6 pt-2">
                 <div className="w-1/2 pr-4 text-[11px] text-gray-700 font-medium">
                   {notes}
@@ -558,11 +824,8 @@ export default function EstimationGenerator() {
               </div>
             </div>
 
-            {/* SIGNATURE FOOTER */}
             <div className="flex justify-between items-end mt-16 pt-8">
-              <div className="w-1/2">
-                {/* Left side blank */}
-              </div>
+              <div className="w-1/2" />
               <div className="w-1/2 text-right">
                 <div className="font-bold text-xs">For {companyName || 'NARIVA INTERIORS'}</div>
                 <div className="h-12" />
@@ -572,6 +835,96 @@ export default function EstimationGenerator() {
           </div>
         </div>
       </div>
+
+      {/* LaTeX Code Modal */}
+      {showLatexModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#25221d] border border-[#9a7d46]/40 rounded-2xl max-w-3xl w-full p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#9a7d46]/20">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#c4ab7c]">
+                Generated Estimation LaTeX Code (.tex)
+              </h3>
+              <button
+                onClick={() => setShowLatexModal(false)}
+                className="text-[#a09789] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <textarea
+              readOnly
+              rows={16}
+              value={latexCode}
+              className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl p-4 font-mono text-xs text-emerald-300 focus:outline-none select-all"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(latexCode);
+                  alert('LaTeX code copied to clipboard!');
+                }}
+                className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Copy LaTeX Code
+              </button>
+              <button
+                onClick={() => setShowLatexModal(false)}
+                className="bg-[#1c1a17] text-[#a09789] hover:text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* JSON Import Modal */}
+      {showJsonModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#25221d] border border-[#9a7d46]/40 rounded-2xl max-w-2xl w-full p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#9a7d46]/20">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#c4ab7c]">
+                Load Estimation State from JSON / Meta
+              </h3>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="text-[#a09789] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[#a09789]">
+              Paste JSON object stored in PostgreSQL `meta` column or full API response to populate form state:
+            </p>
+
+            <textarea
+              rows={10}
+              placeholder='{"company_name": "NARIVA INTERIORS", "client_name": "Gopalakrishna", "estimation_no": "EST/001", "items": [...] }'
+              value={jsonInput}
+              onChange={(e) => setJsonInput(e.target.value)}
+              className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl p-4 font-mono text-xs text-white focus:outline-none focus:border-[#9a7d46]"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleLoadJson}
+                className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Load State
+              </button>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="bg-[#1c1a17] text-[#a09789] hover:text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

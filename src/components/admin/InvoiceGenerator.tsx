@@ -1,6 +1,5 @@
-'use client';
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export interface InvoiceItem {
   id: string;
@@ -10,6 +9,9 @@ export interface InvoiceItem {
 }
 
 export default function InvoiceGenerator() {
+  const searchParams = useSearchParams();
+  const invoiceIdParam = searchParams.get('id');
+
   const [companyName, setCompanyName] = useState('NARIVA INTERIORS');
   const [companyPhone, setCompanyPhone] = useState('+91 93538 75064');
   const [billedTo, setBilledTo] = useState('');
@@ -26,9 +28,63 @@ export default function InvoiceGenerator() {
     '1. Goods once sold will not be taken back.\n2. Subject to local jurisdiction.'
   );
 
+  // LaTeX & Backend State
+  const [saving, setSaving] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [showLatexModal, setShowLatexModal] = useState(false);
+  const [latexCode, setLatexCode] = useState('');
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [jsonInput, setJsonInput] = useState('');
+
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Helper to format currency
+  // Load record by ID from URL query parameter
+  useEffect(() => {
+    if (!invoiceIdParam) return;
+
+    const loadInvoice = async () => {
+      setStatusMsg('Loading saved invoice details...');
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+        const headers: Record<string, string> = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch(`${baseUrl}/api/admin/invoices/${invoiceIdParam}`, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.company_name) setCompanyName(data.company_name);
+          if (data.company_phone) setCompanyPhone(data.company_phone);
+          if (data.billed_to) setBilledTo(data.billed_to);
+          if (data.invoice_no) setInvoiceNo(data.invoice_no);
+          if (data.invoice_date) setDate(data.invoice_date.split('T')[0]);
+          if (data.discount !== undefined) setDiscount(data.discount);
+          if (data.discount_type) setDiscountType(data.discount_type);
+          if (data.terms) setTerms(data.terms);
+
+          if (data.meta?.rawItems && Array.isArray(data.meta.rawItems)) {
+            setItems(data.meta.rawItems);
+          } else if (Array.isArray(data.items)) {
+            setItems(
+              data.items.map((it: { description: string; qty: number; rate: number }, idx: number) => ({
+                id: String(idx + 1),
+                description: it.description || '',
+                qty: it.qty ?? 1,
+                rate: it.rate ?? 0,
+              }))
+            );
+          }
+          setStatusMsg(`✓ Loaded Invoice ${data.invoice_no}`);
+        }
+      } catch (err) {
+        console.error('Error loading invoice by ID:', err);
+        setStatusMsg('Error loading invoice details.');
+      }
+    };
+
+    loadInvoice();
+  }, [invoiceIdParam]);
+
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-IN', {
       minimumFractionDigits: 2,
@@ -36,7 +92,6 @@ export default function InvoiceGenerator() {
     }).format(val);
   };
 
-  // Add Item
   const addItem = () => {
     setItems([
       ...items,
@@ -44,19 +99,16 @@ export default function InvoiceGenerator() {
     ]);
   };
 
-  // Remove Item
   const removeItem = (id: string) => {
     setItems(items.filter((item) => item.id !== id));
   };
 
-  // Update Item
   const updateItem = (id: string, field: keyof InvoiceItem, value: string | number) => {
     setItems(
       items.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
-  // Calculations
   const calculateItemAmount = (qty: number | string, rate: number | string) => {
     const q = typeof qty === 'string' ? parseFloat(qty) || 0 : qty;
     const r = typeof rate === 'string' ? parseFloat(rate) || 0 : rate;
@@ -75,7 +127,188 @@ export default function InvoiceGenerator() {
 
   const totalAmount = Math.max(0, subtotal - discountAmount);
 
-  // Trigger Print / Save as PDF
+  // Generate Client-Side LaTeX Code
+  const generateLatex = () => {
+    const esc = (t: string) =>
+      t
+        ? t
+            .replace(/&/g, '\\&')
+            .replace(/%/g, '\\%')
+            .replace(/\$/g, '\\$')
+            .replace(/#/g, '\\#')
+            .replace(/_/g, '\\_')
+        : '';
+
+    const rows = items
+      .map(
+        (it, idx) =>
+          `${idx + 1} & ${esc(it.description)} & ${it.qty || 1} & ₹${
+            (typeof it.rate === 'string' ? parseFloat(it.rate) || 0 : it.rate).toFixed(2)
+          } & ₹${calculateItemAmount(it.qty, it.rate).toFixed(2)} \\\\ \\hline`
+      )
+      .join('\n');
+
+    return `\\documentclass[11pt,a4paper]{article}
+\\usepackage[utf8]{utf8}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{array, tabularx, hyperref, xcolor}
+\\definecolor{brandpurple}{RGB}{94, 23, 235}
+
+\\pagestyle{empty}
+
+\\begin{document}
+
+\\begin{center}
+    {\\Huge \\bfseries \\color{brandpurple} ${esc(companyName || 'NARIVA INTERIORS')}}\\\\[4pt]
+    {\\large Luxury Interior Design \\& Execution}\\\\[8pt]
+    \\rule{\\linewidth}{1.5pt}
+\\end{center}
+
+\\vspace{10pt}
+
+\\begin{tabularx}{\\linewidth}{X r}
+    {\\bfseries Billed To:} ${esc(billedTo)} & {\\bfseries Invoice No:} ${esc(invoiceNo)} \\\\
+    & {\\bfseries Date:} ${esc(date)} \\\\
+\\end{tabularx}
+
+\\vspace{20pt}
+
+\\begin{table}[h!]
+\\centering
+\\renewcommand{\\arraystretch}{1.4}
+\\begin{tabularx}{\\linewidth}{|c|X|c|r|r|}
+\\hline
+\\rowcolor{brandpurple!10}
+\\textbf{S.No} & \\textbf{Item Description} & \\textbf{Qty} & \\textbf{Rate (₹)} & \\textbf{Amount (₹)} \\\\
+\\hline
+${rows}
+\\end{tabularx}
+\\end{table}
+
+\\vspace{10pt}
+
+\\begin{flushright}
+\\begin{tabular}{r l}
+    \\textbf{Subtotal:} & ₹${subtotal.toFixed(2)} \\\\
+    \\textbf{Discount:} & ₹${discountAmount.toFixed(2)} \\\\
+    \\hline
+    {\\Large \\bfseries Total Amount:} & {\\Large \\bfseries ₹${totalAmount.toFixed(2)}} \\\\
+\\end{tabular}
+\\end{flushright}
+
+\\vspace{20pt}
+
+\\noindent{\\bfseries Terms \\& Conditions:}\\\\
+${esc(terms)}
+
+\\vfill
+\\begin{center}
+    \\small Thank you for choosing ${esc(companyName || 'NARIVA INTERIORS')}!
+\\end{center}
+
+\\end{document}`;
+  };
+
+  // Save to Backend API
+  const handleSaveToBackend = async () => {
+    if (!invoiceNo || !billedTo) {
+      alert('Please enter Invoice No and Billed To name.');
+      return;
+    }
+
+    setSaving(true);
+    setStatusMsg('');
+
+    const metaPayload = {
+      templateVersion: 'v1.0',
+      companyPhone,
+      discount,
+      discountType,
+      terms,
+      latex: generateLatex(),
+      rawItems: items,
+    };
+
+    const payload = {
+      invoice_no: invoiceNo,
+      company_name: companyName,
+      company_phone: companyPhone,
+      billed_to: billedTo,
+      invoice_date: date ? new Date(date).toISOString() : new Date().toISOString(),
+      items: items.map((i) => ({
+        description: i.description,
+        qty: typeof i.qty === 'string' ? parseFloat(i.qty) || 1 : i.qty,
+        rate: typeof i.rate === 'string' ? parseFloat(i.rate) || 0 : i.rate,
+      })),
+      discount: discount || 0,
+      discount_type: discountType,
+      terms,
+      total_amount: totalAmount,
+      meta: metaPayload,
+    };
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const token = localStorage.getItem('admin_token');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${baseUrl}/api/admin/invoices`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setStatusMsg('✓ Invoice & JSON meta saved successfully to backend!');
+      } else {
+        const err = await res.json().catch(() => null);
+        setStatusMsg(`Saved locally! (Backend message: ${err?.detail || res.statusText})`);
+      }
+    } catch {
+      setStatusMsg('Saved locally! (Note: Local backend API not active)');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Load State from JSON
+  const handleLoadJson = () => {
+    try {
+      const data = JSON.parse(jsonInput);
+      if (data.company_name) setCompanyName(data.company_name);
+      if (data.company_phone) setCompanyPhone(data.company_phone);
+      if (data.billed_to) setBilledTo(data.billed_to);
+      if (data.invoice_no) setInvoiceNo(data.invoice_no);
+      if (data.invoice_date) setDate(data.invoice_date.split('T')[0]);
+      if (data.discount !== undefined) setDiscount(data.discount);
+      if (data.discount_type) setDiscountType(data.discount_type);
+      if (data.terms) setTerms(data.terms);
+
+      if (Array.isArray(data.items)) {
+        setItems(
+          data.items.map((it: { description: string; qty: number; rate: number }, idx: number) => ({
+            id: String(idx + 1),
+            description: it.description || '',
+            qty: it.qty ?? 1,
+            rate: it.rate ?? 0,
+          }))
+        );
+      }
+
+      if (data.meta?.rawItems && Array.isArray(data.meta.rawItems)) {
+        setItems(data.meta.rawItems);
+      }
+
+      setShowJsonModal(false);
+      setStatusMsg('✓ JSON data loaded successfully!');
+    } catch {
+      alert('Invalid JSON format. Please check your input.');
+    }
+  };
+
   const handlePrint = () => {
     if (!previewRef.current) return;
     const printContent = previewRef.current.innerHTML;
@@ -157,24 +390,53 @@ export default function InvoiceGenerator() {
         <div>
           <h2 className="font-serif text-2xl text-[#fdfcf9] font-light">Invoice Generator</h2>
           <p className="text-xs text-[#a09789] mt-0.5">
-            Form output mirrors exact LaTeX document specifications for NARIVA INTERIORS
+            Store JSON meta in DB and print/export LaTeX code for PDF generation
           </p>
+          {statusMsg && <p className="text-xs text-emerald-400 font-medium mt-1">{statusMsg}</p>}
         </div>
 
-        <button
-          onClick={handlePrint}
-          className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all shadow-md shadow-[#9a7d46]/20 flex items-center gap-2 self-start sm:self-auto"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          <span>Preview & Print / PDF</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              const code = generateLatex();
+              setLatexCode(code);
+              setShowLatexModal(true);
+            }}
+            className="bg-[#1c1a17] hover:bg-[#25221d] text-[#c4ab7c] border border-[#9a7d46]/40 px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5"
+          >
+            <span>LaTeX Code</span>
+          </button>
+
+          <button
+            onClick={() => setShowJsonModal(true)}
+            className="bg-[#1c1a17] hover:bg-[#25221d] text-[#c4ab7c] border border-[#9a7d46]/40 px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5"
+          >
+            <span>Load JSON</span>
+          </button>
+
+          <button
+            onClick={handleSaveToBackend}
+            disabled={saving}
+            className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all flex items-center gap-1.5 shadow-md shadow-emerald-900/30 disabled:opacity-50"
+          >
+            <span>{saving ? 'Saving...' : 'Save Meta'}</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-medium transition-all shadow-md shadow-[#9a7d46]/20 flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>Print / PDF</span>
+          </button>
+        </div>
       </div>
 
       {/* Grid: Form Left, Preview Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Form Editor (Spans 6 cols) */}
+        {/* Left Column: Form Editor */}
         <div className="lg:col-span-6 bg-[#25221d] p-6 rounded-2xl border border-[#9a7d46]/30 space-y-6">
           <h3 className="text-sm uppercase tracking-wider text-[#c4ab7c] font-semibold pb-2 border-b border-[#9a7d46]/20">
             Invoice Header & Client Info
@@ -345,7 +607,7 @@ export default function InvoiceGenerator() {
           </div>
         </div>
 
-        {/* Right Column: Live Printable Preview (Spans 6 cols) */}
+        {/* Right Column: Live Printable Preview */}
         <div className="lg:col-span-6 space-y-4">
           <div className="flex items-center justify-between px-2">
             <span className="text-xs uppercase tracking-wider text-[#c4ab7c] font-medium flex items-center gap-1.5">
@@ -355,10 +617,8 @@ export default function InvoiceGenerator() {
             <span className="text-[11px] text-[#a09789]">A4 Paper Layout</span>
           </div>
 
-          {/* Paper Container matching exact LaTeX output */}
           <div className="bg-white text-black p-8 rounded-xl shadow-2xl border border-gray-300 font-sans text-xs min-h-[580px] flex flex-col justify-between select-none">
             <div ref={previewRef}>
-              {/* HEADER SECTION */}
               <div className="text-center mb-4">
                 <h1 className="text-2xl font-bold tracking-wide uppercase text-black mb-1">INVOICE</h1>
                 <h2 className="text-lg font-bold uppercase text-black mb-0.5">{companyName || 'NARIVA INTERIORS'}</h2>
@@ -367,7 +627,6 @@ export default function InvoiceGenerator() {
 
               <hr className="border-t border-black my-4" />
 
-              {/* INVOICE DETAILS */}
               <div className="flex justify-between items-start my-4 text-xs font-sans">
                 <div>
                   <div className="font-bold text-black">Billed To:</div>
@@ -383,7 +642,6 @@ export default function InvoiceGenerator() {
                 </div>
               </div>
 
-              {/* ITEMS TABLE (Booktabs style) */}
               <table className="w-full my-6 text-xs border-collapse">
                 <thead>
                   <tr className="border-t-2 border-b-2 border-black">
@@ -410,9 +668,7 @@ export default function InvoiceGenerator() {
                 </tbody>
               </table>
 
-              {/* TOTALS & TERMS SECTION */}
               <div className="flex justify-between items-start mt-6 pt-2">
-                {/* Left: Terms */}
                 <div className="w-1/2 pr-4">
                   <div className="font-bold mb-1">Terms & Conditions:</div>
                   <div className="text-[11px] text-gray-700 whitespace-pre-line leading-relaxed">
@@ -420,7 +676,6 @@ export default function InvoiceGenerator() {
                   </div>
                 </div>
 
-                {/* Right: Subtotal, Discount & Total */}
                 <div className="w-1/2 pl-4">
                   <div className="border-t-2 border-b-2 border-black py-2 space-y-1">
                     {discount > 0 && (
@@ -444,20 +699,107 @@ export default function InvoiceGenerator() {
               </div>
             </div>
 
-            {/* SIGNATURE FOOTER */}
             <div className="flex justify-between items-end mt-16 pt-8">
-              <div className="w-1/2">
-                {/* Left side blank for stamp/notes as per LaTeX spec */}
-              </div>
+              <div className="w-1/2" />
               <div className="w-1/2 text-right">
                 <div className="font-bold text-xs">For {companyName || 'NARIVA INTERIORS'}</div>
-                <div className="h-12" /> {/* Spacing for authorized signature */}
+                <div className="h-12" />
                 <div className="text-xs text-gray-800">Authorized Signatory</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* LaTeX Code Modal */}
+      {showLatexModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#25221d] border border-[#9a7d46]/40 rounded-2xl max-w-3xl w-full p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#9a7d46]/20">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#c4ab7c]">
+                Generated LaTeX Source Code (.tex)
+              </h3>
+              <button
+                onClick={() => setShowLatexModal(false)}
+                className="text-[#a09789] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <textarea
+              readOnly
+              rows={16}
+              value={latexCode}
+              className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl p-4 font-mono text-xs text-emerald-300 focus:outline-none select-all"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(latexCode);
+                  alert('LaTeX code copied to clipboard!');
+                }}
+                className="bg-[#9a7d46] hover:bg-[#856a37] text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Copy LaTeX Code
+              </button>
+              <button
+                onClick={() => setShowLatexModal(false)}
+                className="bg-[#1c1a17] text-[#a09789] hover:text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* JSON Import Modal */}
+      {showJsonModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#25221d] border border-[#9a7d46]/40 rounded-2xl max-w-2xl w-full p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#9a7d46]/20">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#c4ab7c]">
+                Load Invoice State from JSON / Meta
+              </h3>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="text-[#a09789] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[#a09789]">
+              Paste JSON object stored in PostgreSQL `meta` column or full API response to populate form state:
+            </p>
+
+            <textarea
+              rows={10}
+              placeholder='{"company_name": "NARIVA INTERIORS", "billed_to": "Gopalakrishna", "invoice_no": "INV/001", "items": [...] }'
+              value={jsonInput}
+              onChange={(e) => setJsonInput(e.target.value)}
+              className="w-full bg-[#1c1a17] border border-[#9a7d46]/30 rounded-xl p-4 font-mono text-xs text-white focus:outline-none focus:border-[#9a7d46]"
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleLoadJson}
+                className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Load State
+              </button>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="bg-[#1c1a17] text-[#a09789] hover:text-white px-4 py-2 rounded-xl text-xs uppercase font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

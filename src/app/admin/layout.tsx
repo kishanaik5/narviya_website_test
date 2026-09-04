@@ -15,20 +15,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const checkAuth = async () => {
       setLoading(true);
 
-      // 1. Check Client-side Auth First (localStorage)
-      if (typeof window !== 'undefined') {
-        const isClientAuth = localStorage.getItem('nariva_admin_auth') === 'true';
-        if (isClientAuth) {
-          const user = localStorage.getItem('nariva_admin_user') || 'admin';
-          setUsername(user);
-          setLoading(false);
-          return;
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+
+      if (!token) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('nariva_admin_auth');
+          localStorage.removeItem('nariva_admin_user');
         }
+        router.replace('/admin-login');
+        return;
       }
 
-      // 2. Check Server API Session
       try {
-        const res = await fetch('/api/admin/session', { cache: 'no-store' });
+        const res = await fetch(`${baseUrl}/api/admin/session`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store',
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.authenticated) {
@@ -38,10 +41,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           }
         }
       } catch (err) {
-        console.warn('Server session check unavailable:', err);
+        console.warn('Backend session check error:', err);
       }
 
-      // 3. If neither is authenticated, redirect to /admin-login
+      // If backend says not authenticated, clear tokens & redirect
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('nariva_admin_auth');
+        localStorage.removeItem('nariva_admin_user');
+        localStorage.removeItem('admin_token');
+      }
       router.replace('/admin-login');
     };
 
@@ -49,12 +57,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [router, pathname]);
 
   const handleLogout = async () => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+
     if (typeof window !== 'undefined') {
       localStorage.removeItem('nariva_admin_auth');
       localStorage.removeItem('nariva_admin_user');
+      localStorage.removeItem('admin_token');
     }
+
     try {
-      await fetch('/api/admin/logout', { method: 'POST' });
+      if (token) {
+        await fetch(`${baseUrl}/api/admin/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
     } catch (err) {
       console.warn('Logout API error:', err);
     }

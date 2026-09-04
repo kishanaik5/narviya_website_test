@@ -18,26 +18,26 @@ export default function AdminLoginPage() {
     const checkSession = async () => {
       try {
         setLoading(true);
-        // Try server API first
-        const res = await fetch('/api/admin/session', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.authenticated) {
-            router.replace('/admin/dashboard');
-            return;
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+        if (token) {
+          const res = await fetch(`${baseUrl}/api/admin/session`, {
+            headers: { Authorization: `Bearer ${token}` },
+            cache: 'no-store',
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.authenticated) {
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('nariva_admin_auth', 'true');
+              }
+              router.replace('/admin/dashboard');
+              return;
+            }
           }
         }
       } catch (err) {
-        console.log('Server session check unavailable, fallback to client auth check:', err);
-      }
-
-      // Fallback: Check localStorage for static export
-      if (typeof window !== 'undefined') {
-        const isAuth = localStorage.getItem('nariva_admin_auth') === 'true';
-        if (isAuth) {
-          router.replace('/admin/dashboard');
-          return;
-        }
+        console.log('Backend session check error:', err);
       }
 
       setLoading(false);
@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
     checkSession();
   }, [router]);
 
-  // Handle Login Submission
+  // Handle Login Submission (Backend Only)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
@@ -57,43 +57,34 @@ export default function AdminLoginPage() {
 
     setLoginSubmitting(true);
     try {
-      // 1. Try Server API Login
-      const res = await fetch('/api/admin/login', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${baseUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: loginUsername, password: loginPassword }),
+        body: JSON.stringify({ username: loginUsername.trim(), password: loginPassword }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('nariva_admin_auth', 'true');
-            localStorage.setItem('nariva_admin_user', loginUsername.trim());
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data?.success) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('nariva_admin_auth', 'true');
+          localStorage.setItem('nariva_admin_user', loginUsername.trim());
+          if (data.token) {
+            localStorage.setItem('admin_token', data.token);
           }
-          router.push('/admin/dashboard');
-          return;
         }
-      }
-    } catch (err) {
-      console.warn('Server API login unreached, falling back to static client verification:', err);
-    }
-
-    // 2. Fallback Client-side Verification (for static export on Cloudflare Pages)
-    if (typeof window !== 'undefined') {
-      const storedUser = localStorage.getItem('nariva_admin_username') || 'admin';
-      const storedPass = localStorage.getItem('nariva_admin_password') || 'admin123';
-
-      if (loginUsername.trim() === storedUser && loginPassword === storedPass) {
-        localStorage.setItem('nariva_admin_auth', 'true');
-        localStorage.setItem('nariva_admin_user', loginUsername.trim());
         router.push('/admin/dashboard');
         return;
+      } else {
+        setLoginError(data?.detail || 'Invalid username or password.');
       }
+    } catch (err) {
+      console.error('Backend connection failure:', err);
+      setLoginError('Unable to connect to backend server. Please verify backend is running on http://localhost:8000.');
+    } finally {
+      setLoginSubmitting(false);
     }
-
-    setLoginError('Invalid username or password.');
-    setLoginSubmitting(false);
   };
 
   return (
