@@ -190,11 +190,6 @@ function SplitHero({ lang, ready }: { lang: Language; ready: boolean }) {
         {copy("exterior")}
       </div>
 
-      {/* small badge on the split line */}
-      <span className="absolute left-1/2 bottom-[7.5rem] z-10 -translate-x-1/2 rounded-full border border-[#c9972b] bg-[#0b0905]/90 px-4 py-1.5 font-serif text-[11px] font-semibold uppercase tracking-[0.35em] text-[#e6c26a] whitespace-nowrap">
-        {t.brandName}
-      </span>
-
       {/* doors that slide apart after the intro */}
       <div
         aria-hidden
