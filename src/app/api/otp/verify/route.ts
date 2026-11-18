@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { otpStore } from "@/lib/otpStore";
 
+export const dynamic = 'force-static';
+
 export async function POST(request: Request) {
   try {
     const { email, otp } = await request.json();

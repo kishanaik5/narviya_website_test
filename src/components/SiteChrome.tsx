@@ -7,12 +7,13 @@ import Footer from "@/components/Footer";
 import ChatAssistant from "@/components/ChatAssistant";
 import { useLang } from "@/lib/useLang";
 
-/** Header + footer + floating widget around every page (except the printable /card page). */
+/** Header + footer + chat assistant around every public page. */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { lang, setLang } = useLang();
 
-  if (pathname?.startsWith("/card")) return <>{children}</>;
+  // printable card page and the admin panel have their own layouts
+  if (pathname?.startsWith("/card") || pathname?.startsWith("/admin")) return <>{children}</>;
 
   return (
     <>
