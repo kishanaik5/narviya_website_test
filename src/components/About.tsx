@@ -12,14 +12,14 @@ export default function About({ lang }: AboutProps) {
   const t = translations[lang].about;
 
   return (
-    <section id="about" className="py-24 bg-bg-light relative overflow-hidden">
+    <section id="about" className="py-14 md:py-24 bg-[#0a0a0a] relative overflow-hidden scroll-mt-16">
       {/* Decorative side element */}
       <div className="absolute right-0 top-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-center">
           {/* Visual Showcase (Teak Wood & Glass lounge) */}
-          <div className="lg:col-span-5 order-2 lg:order-1 relative aspect-[4/5] w-full overflow-hidden glass-panel border border-luxury-border/30 p-2 gold-shadow">
+          <div className="hidden lg:block lg:col-span-5 order-2 lg:order-1 relative aspect-[4/5] w-full overflow-hidden glass-panel border border-luxury-border/30 p-2 gold-shadow">
             <div className="relative w-full h-full overflow-hidden zoom-container">
               <img
                 src="/images/hero-bg.webp"
@@ -42,23 +42,23 @@ export default function About({ lang }: AboutProps) {
               </span>
             </div>
 
-            <h2 className="font-serif text-4xl md:text-5xl font-medium tracking-tight text-neutral-900">
+            <h2 className="font-serif text-3xl md:text-5xl font-medium tracking-wide text-white first-gold">
               {t.title}
             </h2>
 
             <div className="w-16 h-[2px] bg-primary mb-2 mx-auto lg:mx-0"></div>
 
-            <p className="font-sans text-neutral-600 font-light leading-relaxed max-w-xl">
+            <p className="font-sans text-[#a89f8c] font-light leading-relaxed max-w-xl">
               {t.desc1}
             </p>
 
-            <p className="font-sans text-neutral-600 font-light leading-relaxed max-w-xl">
+            <p className="hidden md:block font-sans text-[#a89f8c] font-light leading-relaxed max-w-xl">
               {t.desc2}
             </p>
 
             {/* Mission Highlight Card */}
-            <div className="p-6 border-l-2 border-primary bg-neutral-50 glass-panel text-left w-full">
-              <span className="block font-serif italic text-lg text-neutral-800">
+            <div className="p-6 border-l-2 border-primary bg-[#131110] glass-panel text-left w-full">
+              <span className="block font-serif italic text-lg text-[#f6f2e9]">
                 &ldquo;{t.mission}&rdquo;
               </span>
             </div>

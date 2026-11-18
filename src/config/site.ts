@@ -1,19 +1,22 @@
 /**
- * Narvia — single source of truth for brand & contact info.
+ * Narviya — single source of truth for brand & contact info.
  */
 
 export const siteConfig = {
   // ---- Brand ----
-  brandName: "Narvia",
-  brandShort: "NARVIA",
+  brandName: "Narviya",
+  brandShort: "NARVIYA",
   tagline: "Where Vision Meets Space, Built Beautifully",
-  logoText: "NARVIA",
+  logoText: "NARVIYA",
   domain: "narviadesign.com",
   siteUrl: "https://narviadesign.com",
 
   // ---- Contact ----
   email: "hello@narviadesign.com",
   phone: "+91 93538 75064",
+  phone2: "+91 63637 07061",
+  ownerName: "Harshith Naik",
+  gst: "29BFHPH7078L1ZR",
   whatsapp: "+91 93538 75064",
   address: "",
   city: "",
@@ -34,9 +37,9 @@ export const siteConfig = {
   logoImage: null as string | null,
 
   // ---- Meta / SEO ----
-  metaTitle: "NARVIA | Where Vision Meets Space, Built Beautifully",
+  metaTitle: "NARVIYA | Where Vision Meets Space, Built Beautifully",
   metaDescription:
-    "Narvia creates bespoke residential living, executive workspaces, and architectural outdoor living. Where vision meets space, built beautifully.",
+    "Narviya creates bespoke residential living, executive workspaces, and architectural outdoor living. Where vision meets space, built beautifully.",
 } as const;
 
 export type SiteConfig = typeof siteConfig;

@@ -9,11 +9,29 @@ export const translations = {
       home: "Home",
       services: "Services",
       materials: "Materials",
+      estimate: "Free Estimate",
       gallery: "Gallery",
       about: "About",
       contact: "Contact",
     },
     hero: {
+      brandName: siteConfig.brandName,
+      interior: {
+        label: "Interiors",
+        tag: "Interiors that inspire living",
+        sub: "End-to-end interiors",
+        items: ["Wood Space", "Glass", "Railings", "PVC & POP"],
+        cta: "Explore Interiors",
+      },
+      exterior: {
+        label: "Exteriors",
+        tag: "Exteriors that inspire spaces",
+        sub: "End-to-end exteriors",
+        items: ["Spider Fitting", "ACP", "Toughened Glass", "WPVC"],
+        cta: "Explore Exteriors",
+      },
+      scroll: "Scroll to step inside",
+      motto: "Spaces | People | Better Living",
       tagline: "Where Vision Meets Space, Built Beautifully",
       title1: "A Frame",
       title2: "for Human Life",
@@ -131,7 +149,7 @@ export const translations = {
     },
     about: {
       title: "About Narviya Designers",
-      desc1: "Narvia Design is an architectural design house built on human-centric principles. We believe design should be a silent frame for daily life — enhancing how you live, work, and interact, built in wood and glass on your budget and your timeline.",
+      desc1: "Narviya Design is an architectural design house built on human-centric principles. We believe design should be a silent frame for daily life — enhancing how you live, work, and interact, built in wood and glass on your budget and your timeline.",
       desc2: "Our core expertise lies in merging high-end wood finishing, acoustic glass partition structures, custom residential layouts, and high-strength outdoor safety solutions into seamless, living spaces.",
       mission: "Crafting atmospheric, balanced environments that respect materials, durability, and human well-being.",
     },
@@ -179,19 +197,37 @@ export const translations = {
   },
   kn: {
     nav: {
-      brand: siteConfig.brandName.toUpperCase(), // TODO: swap for a confirmed Kannada transliteration if the client wants one
+      brand: "ನರ್ವಿಯ",
       home: "ಮುಖಪುಟ",
       services: "ಸೇವೆಗಳು",
       materials: "ವಸ್ತುಗಳು",
+      estimate: "ಉಚಿತ ಅಂದಾಜು",
       gallery: "ಗ್ಯಾಲರಿ",
       about: "ನಮ್ಮ ಬಗ್ಗೆ",
       contact: "ಸಂಪರ್ಕಿಸಿ",
     },
     hero: {
+      brandName: "ನರ್ವಿಯ",
+      interior: {
+        label: "ಇಂಟೀರಿಯರ್ಸ್",
+        tag: "ಜೀವನಕ್ಕೆ ಸ್ಫೂರ್ತಿ ನೀಡುವ ಇಂಟೀರಿಯರ್ಸ್",
+        sub: "ಸಂಪೂರ್ಣ ಇಂಟೀರಿಯರ್ಸ್ ಸೇವೆ",
+        items: ["ಮರದ ಕೆಲಸ", "ಗಾಜು", "ರೇಲಿಂಗ್", "PVC & POP"],
+        cta: "ಇಂಟೀರಿಯರ್ಸ್ ನೋಡಿ",
+      },
+      exterior: {
+        label: "ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್",
+        tag: "ಜಾಗಗಳಿಗೆ ಸ್ಫೂರ್ತಿ ನೀಡುವ ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್",
+        sub: "ಸಂಪೂರ್ಣ ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಸೇವೆ",
+        items: ["ಸ್ಪೈಡರ್ ಫಿಟ್ಟಿಂಗ್", "ACP", "ಟಫನ್ಡ್ ಗಾಜು", "WPVC"],
+        cta: "ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ನೋಡಿ",
+      },
+      scroll: "ಒಳಗೆ ಹೋಗಲು ಸ್ಕ್ರೋಲ್ ಮಾಡಿ",
+      motto: "ಜಾಗ | ಜನ | ಉತ್ತಮ ಜೀವನ",
       tagline: "ದೃಷ್ಟಿಕೋನ ಮತ್ತು ಜಾಗದ ಸುಂದರ ನಿರ್ಮಾಣ",
       title1: "ಮಾನವ ಜೀವನಕ್ಕೆ",
       title2: "ಅತ್ಯುತ್ತಮ ಆಸರೆ",
-      subtitle: "ನಿಮ್ಮ ಮನೆಯ ವೈಯಕ್ತಿಕ ವಿನ್ಯಾಸ, ಕಚೇರಿಗಳ ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಹೊರಾಂಗಣ ಸುರಕ್ಷತಾ ಜಾಲಗಳ ವ್ಯವಸ್ಥೆ. ಸೌಂದರ್ಯ ಮತ್ತು ನಂಬಿಕಸ್ಥ ಗುಣಮಟ್ಟದೊಂದಿಗೆ.",
+      subtitle: "ನಿಮ್ಮ ಮನೆಯ ವೈಯಕ್ತಿಕ ವಿನ್ಯಾಸ, ಕಚೇರಿಗಳ ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಸುರಕ್ಷತಾ ಜಾಲಗಳ ವ್ಯವಸ್ಥೆ. ಸೌಂದರ್ಯ ಮತ್ತು ನಂಬಿಕಸ್ಥ ಗುಣಮಟ್ಟದೊಂದಿಗೆ.",
       ctaPrimary: "ಯೋಜನೆಗಳನ್ನು ನೋಡಿ",
       ctaSecondary: "ಸಮಾಲೋಚನೆ ವಿನಂತಿ",
       experience: "ಸ್ಥಿರ-ಬೆಲೆ ಉಲ್ಲೇಖಗಳು",
@@ -242,8 +278,8 @@ export const translations = {
         }
       },
       outdoor: {
-        title: "ಹೊರಾಂಗಣ ಮತ್ತು ಸುರಕ್ಷತೆ (Exteriors)",
-        subtitle: "ಬಲಿಷ್ಠ ವಾಸ್ತುಶಿಲ್ಪದ ಬಾಳಿಕೆ ಮತ್ತು ಹೊರಾಂಗಣ ರಕ್ಷಣೆ",
+        title: "ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಮತ್ತು ಸುರಕ್ಷತೆ",
+        subtitle: "ಬಲಿಷ್ಠ ವಾಸ್ತುಶಿಲ್ಪದ ಬಾಳಿಕೆ ಮತ್ತು ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ರಕ್ಷಣೆ",
         cladding: {
           name: "HPL ಮತ್ತು ಟಿಂಬರ್ ಗೋಡೆ ಕ್ಲಾಡಿಂಗ್",
           desc: "ಭಾರೀ ಮಳೆ ಮತ್ತು ಬಿಸಿಲಿನಿಂದ ಕಟ್ಟಡದ ಹೊರಗೋಡೆಗಳನ್ನು ರಕ್ಷಿಸುವ ಪ್ರೀಮಿಯಂ ಮರ ಮತ್ತು HPL ಕ್ಲಾಡಿಂಗ್ ಶೀಟ್‌ಗಳು."
@@ -258,7 +294,7 @@ export const translations = {
         },
         pergola: {
           name: "ಮರದ ಸುಂದರ ಪರ್ಗೋಲಾಗಳು",
-          desc: "ಸಂಸ್ಕರಿಸಿದ ಮರದ ಹೊರಾಂಗಣ ಗ್ಯಾಲರಿಗಳು, ಕಾಂಪೋಸಿಟ್ ವುಡ್ ಡೆಕ್ಸ್‌ ಮತ್ತು ಹವಾಮಾನ ನಿರೋಧಕ ಶೇಡ್ ನೆಟ್‌ಗಳು."
+          desc: "ಸಂಸ್ಕರಿಸಿದ ಮರದ ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಗ್ಯಾಲರಿಗಳು, ಕಾಂಪೋಸಿಟ್ ವುಡ್ ಡೆಕ್ಸ್‌ ಮತ್ತು ಹವಾಮಾನ ನಿರೋಧಕ ಶೇಡ್ ನೆಟ್‌ಗಳು."
         }
       }
     },
@@ -287,7 +323,7 @@ export const translations = {
         spec3: "ಪ್ಲಾಸ್ಟರ್ ವಿನ್ಯಾಸದ ಅದ್ಭುತ ಕೋಟಿಂಗ್"
       },
       nets: {
-        title: "ಬಲಿಷ್ಠ ಹೊರಾಂಗಣ ಸೇಫ್ಟಿ ನೆಟ್‌ಗಳು",
+        title: "ಬಲಿಷ್ಠ ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಸೇಫ್ಟಿ ನೆಟ್‌ಗಳು",
         desc: "ತೀವ್ರ ಬಿಸಿಲು ಹಾಗೂ ಗಾಳಿಯನ್ನು ತಡೆದುಕೊಳ್ಳಬಲ್ಲ ಯುವಿ-ಸ್ಟೆಬಿಲೈಸ್ಡ್ HDPE ಮತ್ತು ಸ್ಟೇನ್‌ಲೆಸ್ ಸ್ಟೀಲ್ ತಂತಿಗಳಿಂದ ಕೂಡಿದ ಜಾಲರಿಗಳು.",
         spec1: "15 ವರ್ಷಗಳ ಯುವಿ ಸ್ಟೆಬಿಲಿಟಿ ವಾರಂಟಿ",
         spec2: "ಹೆಚ್ಚು ತೂಕ ಹೊರಬಲ್ಲ ನಿಖರ ಸುರಕ್ಷತಾ ಜಾಲ",
@@ -296,11 +332,11 @@ export const translations = {
     },
     gallery: {
       title: "ಕಲಾಕೃತಿಗಳು",
-      subtitle: "ನಾವು ಪೂರ್ಣಗೊಳಿಸಿದ ವಸತಿ ಗೃಹಗಳು, ಆಧುನಿಕ ಆಫೀಸ್‌ಗಳು ಮತ್ತು ಹೊರಾಂಗಣ ಸುರಕ್ಷತಾ ಯೋಜನೆಗಳ ಚಿತ್ರಶಾಲೆ.",
+      subtitle: "ನಾವು ಪೂರ್ಣಗೊಳಿಸಿದ ವಸತಿ ಗೃಹಗಳು, ಆಧುನಿಕ ಆಫೀಸ್‌ಗಳು ಮತ್ತು ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಸುರಕ್ಷತಾ ಯೋಜನೆಗಳ ಚಿತ್ರಶಾಲೆ.",
       filterAll: "ಎಲ್ಲಾ ಯೋಜನೆಗಳು",
       filterInteriors: "ವಸತಿ ವಿನ್ಯಾಸ",
       filterExteriors: "ಕಚೇರಿ ವಿನ್ಯಾಸ",
-      filterMaterials: "ಹೊರಾಂಗಣ & ಸೇಫ್ಟಿ",
+      filterMaterials: "ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ & ಸೇಫ್ಟಿ",
       viewProject: "ಮಾಹಿತಿ ಪಟ್ಟಿ ನೋಡಿ",
     },
     about: {

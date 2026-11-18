@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     // Log OTP in local terminal for instant developer testing
     console.log(`\n========================================`);
-    console.log(`🔐 [Narvia Design OTP Verification]`);
+    console.log(`🔐 [Narviya Design OTP Verification]`);
     console.log(`📧 Target Email: ${cleanEmail}`);
     console.log(`🔑 Verification Code: ${otp}`);
     console.log(`⏱️ Expires in: 5 minutes`);

@@ -1,31 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfcf9; /* Warm linen / ivory */
-  --foreground: #1c1a17; /* Deep charcoal ink */
-  --accent: #9a7d46;     /* Brass / gold */
-  --accent-rgb: 154, 125, 70;
-  --accent-light: #c4ab7c;
-  --walnut: #5b3a29;     /* Wood tone accent */
-  --plaster-light: #f5f2eb;
-  --plaster-border: #e9e4d9;
-  --muted-text: #6b6459;
-  --luxury-card: rgba(253, 252, 249, 0.85);
-  --luxury-border: rgba(154, 125, 70, 0.18);
+  /* Narviya visiting-card palette: black + metallic gold */
+  --background: #0a0a0a;
+  --foreground: #f6f2e9;
+  --accent: #c9972b;
+  --accent-rgb: 201, 151, 43;
+  --accent-light: #f3d27a;
+  --walnut: #8a6414;
+  --plaster-light: #131110;
+  --plaster-border: #2b2415;
+  --muted-text: #a89f8c;
+  --luxury-card: rgba(19, 17, 16, 0.88);
+  --luxury-border: rgba(201, 151, 43, 0.28);
+  --gold-grad: linear-gradient(135deg, #f3d27a 0%, #c9972b 45%, #8a6414 100%);
 }
 
 @theme {
   --color-primary: var(--accent);
-  --color-accent-light: #c4ab7c;
-  --color-walnut: #5b3a29;
-  --color-muted-text: #6b6459;
-  --color-bg-dark: #1c1a17;
-  --color-bg-light: #fdfcf9;
+  --color-accent-light: #f3d27a;
+  --color-walnut: #8a6414;
+  --color-muted-text: #a89f8c;
+  --color-bg-dark: #050505;
+  --color-bg-light: #0a0a0a;
   --color-luxury-card: var(--luxury-card);
   --color-luxury-border: var(--luxury-border);
   --color-plaster: var(--plaster-light);
   --color-plaster-border: var(--plaster-border);
-  
+
   --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   --font-sans: var(--font-inter), 'Inter', -apple-system, sans-serif;
 }
@@ -66,20 +68,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #8a6c37 0%, #d4b47c 50%, #8a6c37 100%);
+  background: linear-gradient(135deg, #f3d27a 0%, #c9972b 50%, #8a6414 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gold-gradient-bg {
-  background: linear-gradient(135deg, #8a6c37 0%, #d4b47c 100%);
+  background: var(--gold-grad);
 }
 
 .editorial-card {
   background: var(--luxury-card);
   border: 1px solid var(--plaster-border);
-  box-shadow: 0 4px 20px rgba(28, 26, 23, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   will-change: transform;
 }
@@ -87,7 +89,7 @@ h1, h2, h3, h4, h5, h6 {
 .editorial-card:hover {
   border-color: var(--accent);
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(154, 125, 70, 0.10);
+  box-shadow: 0 8px 30px rgba(201, 151, 43, 0.14);
 }
 
 /* Plaster block texture */
@@ -235,4 +237,57 @@ h1, h2, h3, h4, h5, h6 {
 .animate-puppet-blink {
   animation: puppetBlink 4s infinite ease-in-out;
   transform-origin: center;
+}
+
+/* ============ Narviya hero: intro, split, reveal ============ */
+.gold-rule { height: 1px; background: linear-gradient(90deg, transparent, rgba(243,210,122,.7), transparent); }
+.card-caps { font-family: var(--font-cormorant), Georgia, serif; text-transform: uppercase; letter-spacing: .28em; }
+.gold-bar { background: var(--gold-grad); color: #0a0a0a; }
+
+@keyframes introLogo { from { opacity: 0; letter-spacing: .6em; filter: blur(6px);} to { opacity: 1; letter-spacing: .32em; filter: blur(0);} }
+@keyframes introLine { from { transform: scaleX(0);} to { transform: scaleX(1);} }
+.intro-logo { animation: introLogo 1.1s cubic-bezier(.16,1,.3,1) .1s both; }
+.intro-line { transform-origin: left; animation: introLine 1.5s cubic-bezier(.4,0,.2,1) .2s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-logo, .intro-line { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* White text, Title Case, gold first letter */
+.first-gold::first-letter { color: #f3d27a; }
+
+/* ============ Namaste assistant ============ */
+@keyframes namasteBow {
+  0%, 55%, 100% { transform: rotate(0deg) translateY(0); }
+  68% { transform: rotate(9deg) translateY(2px); }
+  82% { transform: rotate(0deg) translateY(0); }
+}
+.animate-namaste-bow {
+  animation: namasteBow 5s infinite ease-in-out;
+  transform-origin: 50% 100%;
+}
+@keyframes namasteHands {
+  0%, 55%, 100% { transform: translateX(-50%) scale(1); }
+  66% { transform: translateX(-50%) scale(1.12) translateY(-2px); }
+  80% { transform: translateX(-50%) scale(1); }
+}
+.animate-namaste-hands {
+  animation: namasteHands 5s infinite ease-in-out;
+}
+@keyframes bubbleLife {
+  0% { opacity: 0; transform: translateY(8px) scale(.9); }
+  8%, 82% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(0) scale(1); visibility: hidden; }
+}
+.animate-bubble-life {
+  animation: bubbleLife 5.5s ease-out forwards;
+}
+@keyframes botPopIn {
+  0% { opacity: 0; transform: translateY(40px) scale(.7); }
+  60% { transform: translateY(-6px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-bot-pop {
+  animation: botPopIn .7s cubic-bezier(.34,1.56,.64,1) both;
 }

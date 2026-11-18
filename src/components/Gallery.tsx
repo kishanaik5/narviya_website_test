@@ -87,10 +87,10 @@ export default function Gallery({ lang }: GalleryProps) {
       titleEn: "Timber Pergola & Facade Cladding",
       titleKn: "ಮರದ ಪರ್ಗೋಲಾ ಮತ್ತು ಹೊರಗೋಡೆ ಕ್ಲಾಡಿಂಗ್",
       descEn: "Treated teak gazebos, heavy-duty HPL wall cladding protecting facades against weathering.",
-      descKn: "ಸಂಸ್ಕರಿಸಿದ ಮರದ ಹೊರಾಂಗಣ ಗ್ಯಾಲರಿ ಮತ್ತು ಹವಾಮಾನ ನಿರೋಧಕ ಕ್ಲಾಡಿಂಗ್.",
+      descKn: "ಸಂಸ್ಕರಿಸಿದ ಮರದ ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ಗ್ಯಾಲರಿ ಮತ್ತು ಹವಾಮಾನ ನಿರೋಧಕ ಕ್ಲಾಡಿಂಗ್.",
       image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=600",
       tagsEn: ["Outdoor", "HPL Cladding", "Pergola"],
-      tagsKn: ["ಹೊರಾಂಗಣ", "HPL ಕ್ಲಾಡಿಂಗ್", "ಪರ್ಗೋಲಾ"]
+      tagsKn: ["ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್", "HPL ಕ್ಲಾಡಿಂಗ್", "ಪರ್ಗೋಲಾ"]
     }
   ];
 
@@ -98,22 +98,22 @@ export default function Gallery({ lang }: GalleryProps) {
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="gallery" className="py-28 bg-[#faf8f5] border-b border-plaster-border">
+    <section id="gallery" className="py-14 md:py-28 bg-[#0a0a0a] border-b border-plaster-border scroll-mt-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Heading */}
-        <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+        <div className="text-center max-w-2xl mx-auto mb-6 md:mb-20 space-y-3 md:space-y-4">
           <span className="editorial-subtitle">{lang === "en" ? "Selected Works" : "ಕೃತಿಗಳು"}</span>
-          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900">
+          <h2 className="font-serif text-3xl md:text-6xl font-light tracking-wide text-white first-gold">
             {t.title}
           </h2>
           <div className="w-12 h-[1px] bg-primary/60 mx-auto"></div>
-          <p className="font-sans text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto">
+          <p className="font-sans text-sm text-[#a89f8c] font-light leading-relaxed max-w-xl mx-auto hidden md:block">
             {t.subtitle}
           </p>
         </div>
 
         {/* Editorial Filter Controls */}
-        <div className="flex flex-wrap justify-center gap-4 mb-16 border-b border-plaster-border pb-1">
+        <div className="flex md:flex-wrap md:justify-center gap-2 md:gap-4 mb-6 md:mb-16 border-b border-plaster-border pb-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-6 px-6 md:mx-0 md:px-0">
           {[
             { id: "all", label: t.filterAll },
             { id: "interiors", label: t.filterInteriors },
@@ -123,10 +123,10 @@ export default function Gallery({ lang }: GalleryProps) {
             <button
               key={btn.id}
               onClick={() => setFilter(btn.id as FilterType)}
-              className={`pb-4 px-3 font-serif text-lg tracking-wide transition-all duration-500 relative cursor-pointer ${
+              className={`pb-3 md:pb-4 px-3 font-serif text-base md:text-lg tracking-wide whitespace-nowrap transition-all duration-500 relative cursor-pointer ${
                 filter === btn.id
                   ? "text-primary font-medium"
-                  : "text-neutral-400 hover:text-neutral-800"
+                  : "text-[#8b826f] hover:text-[#f6f2e9]"
               }`}
             >
               {btn.label}
@@ -138,14 +138,14 @@ export default function Gallery({ lang }: GalleryProps) {
         </div>
 
         {/* Project Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {filteredProjects.map((p) => (
             <div
               key={p.id}
-              className="editorial-card group overflow-hidden border border-plaster-border bg-white flex flex-col justify-between"
+              className="editorial-card group overflow-hidden border border-plaster-border bg-[#131110] flex flex-col justify-between shrink-0 w-[80%] sm:w-[55%] md:w-auto snap-center"
             >
               {/* Image Visual with floating tags */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden zoom-container border-b border-plaster-border">
+              <div className="relative aspect-[16/10] md:aspect-[4/3] w-full overflow-hidden zoom-container border-b border-plaster-border">
                 <img
                   src={p.image}
                   alt={lang === "en" ? p.titleEn : p.titleKn}
@@ -170,12 +170,12 @@ export default function Gallery({ lang }: GalleryProps) {
               </div>
 
               {/* Text descriptions */}
-              <div className="p-6 space-y-4">
+              <div className="p-4 md:p-6 space-y-3 md:space-y-4">
                 <div className="space-y-1">
-                  <h3 className="font-serif text-xl font-medium text-neutral-900 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-serif text-xl font-medium text-[#f6f2e9] group-hover:text-primary transition-colors duration-300">
                     {lang === "en" ? p.titleEn : p.titleKn}
                   </h3>
-                  <p className="font-sans text-[11px] text-neutral-500 font-light leading-relaxed">
+                  <p className="font-sans text-[11px] text-[#a89f8c] font-light leading-relaxed">
                     {lang === "en" ? p.descEn : p.descKn}
                   </p>
                 </div>

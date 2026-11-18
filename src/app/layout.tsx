@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import SiteChrome from "@/components/SiteChrome";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -20,7 +21,7 @@ const inter = Inter({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#fdfcf9",
+  themeColor: "#0a0a0a",
 };
 
 export const metadata: Metadata = {
@@ -36,10 +37,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`scroll-smooth ${cormorant.variable} ${inter.variable}`}>
       <head>
-        <link rel="preload" href="/images/hero-bg.webp" as="image" type="image/webp" />
+        <link rel="preload" href="/images/scene-1-exterior.webp" as="image" type="image/webp" />
       </head>
       <body className="antialiased min-h-screen flex flex-col bg-bg-light text-foreground font-sans">
-        {children}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

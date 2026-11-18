@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Language, translations } from "@/locales/translations";
 
 interface MaterialsShowcaseProps {
@@ -58,15 +59,15 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
   const currentMaterial = materialsList.find((m) => m.id === activeTab)!;
 
   return (
-    <section id="materials" className="py-24 bg-bg-light">
+    <section id="materials" className="py-14 md:py-24 bg-[#0a0a0a] scroll-mt-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Heading */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-medium tracking-tight mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-8 md:mb-16">
+          <h2 className="font-serif text-3xl md:text-5xl font-medium tracking-wide text-white first-gold mb-3 md:mb-4">
             {t.title}
           </h2>
           <div className="w-16 h-[2px] bg-primary mx-auto mb-6"></div>
-          <p className="text-neutral-600 font-sans font-light">
+          <p className="text-[#a89f8c] font-sans font-light hidden md:block">
             {t.subtitle}
           </p>
         </div>
@@ -74,15 +75,15 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
         {/* Outer Box */}
         <div className="glass-panel border border-luxury-border/30 overflow-hidden shadow-xl">
           {/* Tabs bar */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-luxury-border/30 bg-neutral-100/50">
+          <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-luxury-border/30 bg-[#131110]">
             {materialsList.map((m) => (
               <button
                 key={m.id}
                 onClick={() => setActiveTab(m.id)}
-                className={`py-6 px-4 font-serif text-lg tracking-wide transition-all duration-300 border-r border-luxury-border/10 last:border-r-0 cursor-pointer ${
+                className={`py-3 md:py-6 px-3 md:px-4 font-serif text-sm md:text-lg tracking-wide transition-all duration-300 border-r border-luxury-border/10 last:border-r-0 cursor-pointer ${
                   activeTab === m.id
-                    ? "bg-bg-light text-primary font-semibold border-t-2 border-t-primary"
-                    : "text-neutral-500 hover:text-neutral-800"
+                    ? "bg-[#0a0a0a] text-primary font-semibold border-t-2 border-t-primary"
+                    : "text-[#a89f8c] hover:text-[#f6f2e9]"
                 }`}
               >
                 {m.tabLabel}
@@ -91,20 +92,20 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
           </div>
 
           {/* Tab Content Panel */}
-          <div className="p-8 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="p-5 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             {/* Details Column */}
             <div className="space-y-6 animate-fade-in">
-              <h3 className="font-serif text-3xl lg:text-4xl font-semibold text-neutral-900">
+              <h3 className="font-serif text-2xl lg:text-4xl font-semibold text-[#f6f2e9]">
                 {currentMaterial.title}
               </h3>
-              <p className="font-sans text-neutral-600 font-light leading-relaxed">
+              <p className="font-sans text-[#a89f8c] font-light leading-relaxed">
                 {currentMaterial.desc}
               </p>
 
               {/* Specifications checklist */}
               <div className="space-y-3 pt-4">
                 {currentMaterial.specs.map((spec, index) => (
-                  <div key={index} className="flex items-center space-x-3 text-neutral-700">
+                  <div key={index} className="flex items-center space-x-3 text-[#d4ccb8]">
                     <span className="flex-shrink-0 h-5 w-5 rounded-full border border-primary/40 bg-primary/5 flex items-center justify-center text-primary">
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                         <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
@@ -117,20 +118,20 @@ export default function MaterialsShowcase({ lang }: MaterialsShowcaseProps) {
 
               {/* Consultation CTA */}
               <div className="pt-6">
-                <a
-                  href="#contact"
+                <Link
+                  href="/contact"
                   className="inline-flex items-center text-xs uppercase tracking-widest text-primary font-sans font-semibold border-b border-primary/40 pb-1.5 hover:border-primary transition-all duration-300"
                 >
                   {lang === "en" ? "Consult About Materials" : "ಪರಿಕರಗಳ ಬಗ್ಗೆ ಚರ್ಚಿಸಿ"}
                   <svg className="w-3.5 h-3.5 fill-current ml-2" viewBox="0 0 24 24">
                     <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z" />
                   </svg>
-                </a>
+                </Link>
               </div>
             </div>
 
             {/* Visual Column */}
-            <div className="relative aspect-[4/3] w-full overflow-hidden border border-luxury-border/30 gold-shadow zoom-container">
+            <div className="relative aspect-[16/9] lg:aspect-[4/3] w-full overflow-hidden border border-luxury-border/30 gold-shadow zoom-container">
               <img
                 src={currentMaterial.image}
                 alt={currentMaterial.title}

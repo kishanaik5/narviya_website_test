@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useWorld } from "@/lib/useWorld";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Language, translations } from "@/locales/translations";
 
 interface ServicesProps {
   lang: Language;
 }
 
-type TabType = "residential" | "commercial" | "outdoor";
+type TabType = "interior" | "exterior";
 
 export default function Services({ lang }: ServicesProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("residential");
+  // Opened from the home page with ?tab=interior|exterior
+  const tabParam = useSearchParams().get("tab");
+  const [activeTab, setActiveTab] = useState<TabType>(tabParam === "exterior" ? "exterior" : "interior");
+  const { setWorld } = useWorld();
+  useEffect(() => {
+    setWorld(activeTab); // the visiting card follows the tab being explored
+  }, [activeTab, setWorld]);
   const t = translations[lang].services;
+  const h = translations[lang].hero;
 
   const residentialItems = [
     {
@@ -94,67 +104,54 @@ export default function Services({ lang }: ServicesProps) {
     }
   ];
 
-  const getActiveItems = () => {
-    switch (activeTab) {
-      case "residential":
-        return residentialItems;
-      case "commercial":
-        return commercialItems;
-      case "outdoor":
-        return outdoorItems;
-      default:
-        return residentialItems;
-    }
-  };
+  const getActiveItems = () =>
+    activeTab === "interior" ? [...residentialItems, ...commercialItems] : outdoorItems;
 
   const activeItems = getActiveItems();
 
   return (
-    <section id="services" className="py-28 bg-[#faf8f5] border-b border-plaster-border">
+    <section id="services" className="py-14 md:py-28 bg-[#0a0a0a] border-b border-plaster-border scroll-mt-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Heading */}
-        <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+        <div className="text-center max-w-2xl mx-auto mb-8 md:mb-20 space-y-3 md:space-y-4">
           <span className="editorial-subtitle">{lang === "en" ? "Collections" : "ಸೇವೆಗಳು"}</span>
-          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight text-neutral-900">
+          <h2 className="font-serif text-3xl md:text-6xl font-light tracking-wide text-white first-gold">
             {t.title}
           </h2>
           <div className="w-12 h-[1px] bg-primary/60 mx-auto"></div>
-          <p className="font-sans text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto">
+          <p className="font-sans text-sm text-[#a89f8c] font-light leading-relaxed max-w-xl mx-auto hidden md:block">
             {t.subtitle}
           </p>
         </div>
 
-        {/* Editorial Tab Controls */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-16 border-b border-plaster-border pb-1">
-          {(["residential", "commercial", "outdoor"] as TabType[]).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-4 px-3 font-serif text-xl md:text-2xl tracking-wide transition-all duration-500 relative cursor-pointer ${
-                activeTab === tab
-                  ? "text-primary font-medium"
-                  : "text-neutral-400 hover:text-neutral-800"
-              }`}
-            >
-              {tab === "residential" && t.residential.title}
-              {tab === "commercial" && t.commercial.title}
-              {tab === "outdoor" && t.outdoor.title}
-              {activeTab === tab && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary animate-reveal"></span>
-              )}
-            </button>
-          ))}
+        {/* Interior | Exterior toggle */}
+        <div className="flex justify-center mb-8 md:mb-14">
+          <div role="tablist" className="inline-flex rounded-full border border-[#c9972b]/40 p-1 bg-[#131110]">
+            {(["interior", "exterior"] as TabType[]).map((tab) => (
+              <button
+                key={tab}
+                role="tab"
+                aria-selected={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 md:px-10 py-2.5 rounded-full text-xs md:text-sm uppercase tracking-[0.25em] transition-all duration-500 cursor-pointer ${
+                  activeTab === tab ? "gold-bar font-semibold" : "text-[#a89f8c] hover:text-[#f6f2e9]"
+                }`}
+              >
+                {h[tab].label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Editorial Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div key={activeTab} className="animate-fade-in opacity-0 flex md:grid md:grid-cols-2 gap-4 md:gap-10 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {activeItems.map((item) => (
             <div
               key={item.id}
-              className="editorial-card group overflow-hidden border border-plaster-border bg-white flex flex-col justify-between"
+              className="editorial-card group overflow-hidden border border-plaster-border bg-[#131110] flex flex-col justify-between shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-center"
             >
               {/* Image Frame */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden zoom-container border-b border-plaster-border">
+              <div className="relative aspect-[16/9] md:aspect-[16/10] w-full overflow-hidden zoom-container border-b border-plaster-border">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -173,32 +170,34 @@ export default function Services({ lang }: ServicesProps) {
               </div>
 
               {/* Service Details */}
-              <div className="p-8 space-y-4">
+              <div className="p-5 md:p-8 space-y-3 md:space-y-4">
                 <div className="space-y-1">
-                  <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-sans">
-                    {activeTab === "residential" && (lang === "en" ? "Residential Design" : "ವಸತಿ ವಿನ್ಯಾಸ")}
-                    {activeTab === "commercial" && (lang === "en" ? "Commercial Architecture" : "ಕಚೇರಿ ವಿನ್ಯಾಸ")}
-                    {activeTab === "outdoor" && (lang === "en" ? "Exterior Protection" : "ಹೊರಾಂಗಣ ಮತ್ತು ಸೇಫ್ಟಿ")}
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-[#c9972b] font-sans">
+                    {residentialItems.includes(item)
+                      ? lang === "en" ? "Residential" : "ವಸತಿ"
+                      : commercialItems.includes(item)
+                      ? lang === "en" ? "Workspace" : "ಕಚೇರಿ"
+                      : lang === "en" ? "Exterior" : "ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್"}
                   </span>
-                  <h3 className="font-serif text-2xl font-light text-neutral-900 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-serif text-xl md:text-2xl font-normal text-[#f6f2e9] group-hover:text-[#f3d27a] transition-colors duration-300">
                     {item.name}
                   </h3>
                 </div>
                 
-                <p className="font-sans text-xs text-neutral-600 font-light leading-relaxed">
+                <p className="font-sans text-xs text-[#a89f8c] font-light leading-relaxed line-clamp-3 md:line-clamp-none">
                   {item.desc}
                 </p>
                 
-                <div className="pt-4">
-                  <a
-                    href="#contact"
+                <div className="pt-1 md:pt-4">
+                  <Link
+                    href="/contact"
                     className="inline-flex items-center text-[10px] uppercase tracking-widest text-primary font-sans font-semibold border-b border-primary/20 pb-1 hover:border-primary transition-all duration-300"
                   >
                     {lang === "en" ? "Discuss Project" : "ಯೋಜನೆ ಬಗ್ಗೆ ಚರ್ಚಿಸಿ"}
                     <svg className="w-3 h-3 fill-current ml-2 transform group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24">
                       <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z" />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

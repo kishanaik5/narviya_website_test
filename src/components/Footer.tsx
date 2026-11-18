@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import Link from "next/link";
 import { Language, translations } from "@/locales/translations";
 import { siteConfig } from "@/config/site";
-import { CardFront, CardBack } from "./BusinessCard";
+import VisitingCard from "./VisitingCard";
 
 interface FooterProps {
   lang: Language;
@@ -11,195 +12,107 @@ interface FooterProps {
 
 export default function Footer({ lang }: FooterProps) {
   const t = translations[lang];
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-
-  // PDF Export Handler for the Visiting Card (Downloads 'narvia-card.pdf' directly)
-  const handleDownloadPdf = async (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    try {
-      setIsDownloading(true);
-      const { downloadCardPdf } = await import("@/lib/downloadCardPdf");
-      const success = await downloadCardPdf();
-
-      if (success) {
-        setToastMsg("narvia-card.pdf Downloaded!");
-        setTimeout(() => setToastMsg(null), 3000);
-      }
-    } catch (err) {
-      console.error("PDF generation failed:", err);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
   return (
-    <footer className="bg-[#0b0a09] text-neutral-400 border-t border-luxury-border/20 pt-16 pb-8 transition-colors duration-500 relative overflow-hidden">
-      {/* Hidden Offscreen High-Res Containers for Crisp Vector-accurate PDF Generation */}
-      <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none opacity-0">
-        <div id="pdf-footer-card-front" className="w-[336px] h-[192px] rounded-xl overflow-hidden">
-          <CardFront />
-        </div>
-        <div id="pdf-footer-card-back" className="w-[336px] h-[192px] rounded-xl overflow-hidden">
-          <CardBack />
-        </div>
-      </div>
-
-      {/* Floating Toast */}
-      {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-2 rounded-full bg-primary text-black font-sans text-xs font-semibold shadow-2xl animate-fade-in flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          {toastMsg}
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-12 items-start">
+    <footer className="bg-[#0b0a09] text-[#8b826f] border-t border-luxury-border/20 pt-10 md:pt-16 pb-6 md:pb-8 transition-colors duration-500 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-8 mb-8 md:mb-12 items-start">
         {/* Col 1: Brand Column (lg:col-span-3) */}
         <div className="space-y-4 lg:col-span-3">
           <div className="flex flex-col">
             <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider gold-gradient-text">
               {t.nav.brand}
             </span>
-            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-neutral-500">
+            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-[#a89f8c]">
               {lang === "en" ? "Interior & Exterior Luxury" : "ಐಷಾರಾಮಿ ವಿನ್ಯಾಸಗಾರರು"}
             </span>
           </div>
-          <p className="font-sans text-xs font-light leading-relaxed text-neutral-500 max-w-xs">
+          <p className="font-sans text-xs font-light leading-relaxed text-[#a89f8c] max-w-xs">
             {lang === "en"
               ? "Exquisite architectural spaces designed with high-end teakwood, soundproof glass facades, and heavy-duty outdoor nets."
-              : "ಸುಂದರ ತೇಗದ ಮರಗೆಲಸ, ಗಾಜಿನ ಕಲೆಗಳು ಹಾಗೂ ಬಾಲ್ಕನಿ ಸೇಫ್ಟಿ ನೆಟ್‌ಗಳೊಂದಿಗೆ ಕಲಾತ್ಮಕವಾದ ಒಳಾಂಗಣ ಮತ್ತು ಹೊರಾಂಗಣ ವಿನ್ಯಾಸಗಳು."}
+              : "ಸುಂದರ ತೇಗದ ಮರಗೆಲಸ, ಗಾಜಿನ ಕಲೆಗಳು ಹಾಗೂ ಬಾಲ್ಕನಿ ಸೇಫ್ಟಿ ನೆಟ್‌ಗಳೊಂದಿಗೆ ಕಲಾತ್ಮಕವಾದ ಇಂಟೀರಿಯರ್ಸ್ ಮತ್ತು ಎಕ್ಸ್‌ಟೀರಿಯರ್ಸ್ ವಿನ್ಯಾಸಗಳು."}
           </p>
+          <nav className="md:hidden flex flex-wrap gap-x-4 gap-y-1 text-[11px] uppercase tracking-[0.18em] text-[#e6d7ab]">
+            {[["#home", t.nav.home], ["#services", t.nav.services], ["#materials", t.nav.materials], ["#gallery", t.nav.gallery], ["#about", t.nav.about]].map(([h, n]) => (
+              <a key={h} href={h}>{n}</a>
+            ))}
+          </nav>
           <div className="text-xs space-y-1 pt-2">
             <p className="font-medium text-neutral-300">{siteConfig.hours.weekdays}</p>
-            <p className="text-neutral-500">{siteConfig.hours.sunday}</p>
+            <p className="text-[#a89f8c]">{siteConfig.hours.sunday}</p>
           </div>
         </div>
 
         {/* Col 2: Quick Links Column (lg:col-span-2) */}
-        <div className="lg:col-span-2">
+        <div className="hidden md:block lg:col-span-2">
           <h4 className="font-serif text-lg text-white font-semibold mb-4 tracking-wide">
             {lang === "en" ? "Quick Links" : "ತ್ವರಿತ ಕೊಂಡಿಗಳು"}
           </h4>
           <ul className="space-y-2.5 text-xs font-sans font-light">
             <li>
-              <a href="#home" className="hover:text-primary transition-colors duration-300">
+              <Link href="/" className="hover:text-primary transition-colors duration-300">
                 {t.nav.home}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.nav.services}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#materials" className="hover:text-primary transition-colors duration-300">
+              <Link href="/materials" className="hover:text-primary transition-colors duration-300">
                 {t.nav.materials}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#gallery" className="hover:text-primary transition-colors duration-300">
+              <Link href="/gallery" className="hover:text-primary transition-colors duration-300">
                 {t.nav.gallery}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#about" className="hover:text-primary transition-colors duration-300">
+              <Link href="/about" className="hover:text-primary transition-colors duration-300">
                 {t.nav.about}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
 
         {/* Col 3: Services Column (lg:col-span-3) */}
-        <div className="lg:col-span-3">
+        <div className="hidden md:block lg:col-span-3">
           <h4 className="font-serif text-lg text-white font-semibold mb-4 tracking-wide">
             {lang === "en" ? "Specializations" : "ನಮ್ಮ ಪರಿಣತಿ"}
           </h4>
           <ul className="space-y-2 text-xs font-sans font-light">
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.services.residential.kitchen.name}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.services.residential.wardrobe.name}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.services.commercial.partitions.name}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.services.outdoor.nets.name}
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-primary transition-colors duration-300">
+              <Link href="/services" className="hover:text-primary transition-colors duration-300">
                 {t.services.outdoor.cladding.name}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 4: Footer Right Corner — Digital Visiting Card (lg:col-span-4) */}
-        <div className="lg:col-span-4 flex flex-col items-start lg:items-end">
-          <div className="w-full max-w-[340px] flex flex-col gap-2">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#c4ab7c] font-medium flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#c4ab7c] animate-pulse" />
-                {lang === "en" ? "Visiting Card" : "ವಿಸಿಟಿಂಗ್ ಕಾರ್ಡ್"}
-              </span>
-              <span className="text-[9px] text-neutral-500 font-sans">
-                {lang === "en" ? "Tap to flip" : "ತಿರುಗಿಸಲು ಸ್ಪರ್ಶಿಸಿ"}
-              </span>
-            </div>
-
-            {/* Credit Card Container: Vertical portrait on mobile (90deg card proportion) / Landscape on desktop */}
-            <div
-              onClick={() => setIsFlipped(!isFlipped)}
-              className="perspective-1000 w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[340px] aspect-[1/1.42] sm:aspect-[1.75/1] mx-auto lg:mx-0 cursor-pointer touch-manipulation relative group"
-              title={lang === "en" ? "Click/tap to flip card" : "ಕಾರ್ಡ್ ತಿರುಗಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"}
-            >
-              {/* Rotating 3D card body */}
-              <div
-                className={`relative w-full h-full duration-700 transform-style-3d transition-transform ${
-                  isFlipped ? "rotate-y-180" : ""
-                }`}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                {/* FRONT SIDE with top right download icon */}
-                <div
-                  className={`absolute inset-0 backface-hidden shadow-2xl rounded-2xl ring-1 ring-white/10 group-hover:ring-[#c4ab7c]/50 transition-all duration-300 ${
-                    isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
-                  }`}
-                  style={{
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                  }}
-                >
-                  <CardFront onDownload={handleDownloadPdf} isDownloading={isDownloading} />
-                </div>
-
-                {/* BACK SIDE with top right download icon */}
-                <div
-                  className={`absolute inset-0 backface-hidden rotate-y-180 shadow-2xl rounded-2xl ring-1 ring-black/10 group-hover:ring-[#9a7d46]/50 transition-all duration-300 ${
-                    !isFlipped ? "opacity-0 pointer-events-none" : "opacity-100"
-                  }`}
-                  style={{
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                  }}
-                >
-                  <CardBack onDownload={handleDownloadPdf} isDownloading={isDownloading} />
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Col 4: Visiting card (real artwork + zip download) */}
+        <div className="lg:col-span-4 flex flex-col items-center lg:items-end">
+          <VisitingCard lang={lang} />
         </div>
       </div>
 
@@ -207,19 +120,19 @@ export default function Footer({ lang }: FooterProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-[1px] bg-neutral-900 my-8"></div>
 
       {/* Bottom strip */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-neutral-500 font-sans">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#a89f8c] font-sans">
         <p>
           &copy; {new Date().getFullYear()} {siteConfig.brandShort || "NARVIA"} DESIGN. All rights reserved.
         </p>
 
         {/* Designed & Built by Credit */}
-        <p className="flex items-center gap-1.5 text-neutral-400">
+        <p className="flex items-center gap-1.5 text-[#8b826f]">
           <span>Designed &amp; Built by</span>
           <a
             href="https://kishan-k.pages.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#c4ab7c] hover:text-[#fdfcf9] font-medium underline underline-offset-4 decoration-[#c4ab7c]/40 hover:decoration-[#c4ab7c] transition-colors cursor-pointer touch-manipulation"
+            className="text-[#e6c26a] hover:text-[#f3d27a] font-medium underline underline-offset-4 decoration-[#e6c26a]/40 hover:decoration-[#e6c26a] transition-colors cursor-pointer touch-manipulation"
           >
             KISHAN K
           </a>
